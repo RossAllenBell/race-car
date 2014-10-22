@@ -8,6 +8,7 @@ public class UI : MonoBehaviour {
 	public static Rect LeftRect;
 	public static Rect RightRect;
 	public static Rect ARect;
+	public static Rect BRect;
 	private static int lastKnownScreenWidth = -1;
 
 	public int NormalButtonWidth = 200;
@@ -26,7 +27,8 @@ public class UI : MonoBehaviour {
 			float guiRatio = Screen.width / Main.NormalWidth;
 			LeftRect = new Rect(NormalButtonpadding * guiRatio, Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 			RightRect = new Rect((NormalButtonpadding * guiRatio * 2) + (NormalButtonWidth * guiRatio), Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
-			ARect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
+			ARect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio * 2), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
+			BRect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 			lastKnownScreenWidth = Screen.width;
 		}
 		// LeftRect = new Rect(20, Screen.height - 120, 100, 100);
@@ -38,5 +40,6 @@ public class UI : MonoBehaviour {
 		GUI.Box(LeftRect, GUIContent.none, style);
 		GUI.Box(RightRect, GUIContent.none, style);
 		GUI.Box(ARect, GUIContent.none, style);
+		GUI.Box(BRect, GUIContent.none, style);
 	}
 }

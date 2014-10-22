@@ -3,11 +3,26 @@ using System.Collections;
 
 public class Car : MonoBehaviour {
 
-	public float Acceleration;
-	public float TurnSpeed;
+	public WheelCollider fl;
+	public WheelCollider fr;
+	public WheelCollider bl;
+	public WheelCollider br;
+
+	public float MaxTurn;
+	public float MaxTorque;
+	public float MaxBreak;
+	public float MaxSpeed;
+	 
+	private float steer = 0;
+	private float motor = 0;
+	private float brake = 0;
+	private float forward = 0;
+	private float back = 0;
+	private float speed = 0;
+	private bool reverse = false;
 
 	void Start () {
-
+		rigidbody.centerOfMass = new Vector3(0, -0.5f, 0);
 	}
 	
 	void Update () {
@@ -15,25 +30,42 @@ public class Car : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		if(IsGrounded()){
-			if(Input.GetKey(KeyCode.UpArrow) || Main.TouchingIn(UI.ARect)) {
-				rigidbody.AddRelativeForce (Vector3.forward * Acceleration);
-			} else if(Input.GetKey(KeyCode.DownArrow)) {
-				rigidbody.AddRelativeForce (Vector3.back * Acceleration);
-			}
+		speed = rigidbody.velocity.sqrMagnitude;
+ 
+ 		if(Main.TouchingIn(UI.LeftRect)) {
+ 			steer = -1;
+ 		} else if(Main.TouchingIn(UI.RightRect)) {
+ 			steer = 1;
+ 		} else {
+			steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+ 		}
 
-			if(Input.GetKey(KeyCode.LeftArrow) || Main.TouchingIn(UI.LeftRect)) {
-				rigidbody.AddTorque(Vector3.down * TurnSpeed);
-			} else if(Input.GetKey(KeyCode.RightArrow) || Main.TouchingIn(UI.RightRect)) {
-				rigidbody.AddTorque(Vector3.up * TurnSpeed);
-			} else {
-				// var backToCenter = Vector3.Lerp(rigidbody.angularVelocity, Vector3.zero, 0.5f);
-				// rigidbody.AddTorque(backToCenter);
-			}
+		forward = Main.TouchingIn(UI.ARect) || Input.GetAxis("Vertical") > 0 ? 1 : 0;
+		back = Main.TouchingIn(UI.BRect) || Input.GetAxis("Vertical") < 0 ? 1 : 0;
+
+		if(Mathf.Abs(speed) < 0.01) {
+	  	    if(back > 0) { reverse = true; }
+	        if(forward > 0) { reverse = false; }
 		}
-	}
+		 
+		if(reverse) {
+		  motor = -1 * back;
+		  brake = forward;
+		} else {
+		  motor = forward;
+		  brake = back;
+		}
 
-	bool IsGrounded () {
-	    return Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y + 0.1f);
+		if(Mathf.Abs(speed) >= MaxSpeed){
+			motor = 0;
+		}
+		 
+		bl.motorTorque = MaxTorque * motor;
+		br.motorTorque = MaxTorque * motor;
+		bl.brakeTorque = MaxBreak * brake;
+		br.brakeTorque = MaxBreak * brake;
+		 
+		fl.steerAngle = MaxTurn * steer;
+		fr.steerAngle = MaxTurn * steer;
 	}
 }
