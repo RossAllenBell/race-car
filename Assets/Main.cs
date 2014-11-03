@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
+    public const string Version = "0.1.0";
+    public const string GameName = "Race Car";
+
 	public const float NormalWidth = 1920;
     public const float NormalHeight = 1080;
 

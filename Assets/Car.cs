@@ -30,42 +30,45 @@ public class Car : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		speed = rigidbody.velocity.sqrMagnitude;
- 
- 		if(Main.TouchingIn(UI.LeftRect)) {
- 			steer = -1;
- 		} else if(Main.TouchingIn(UI.RightRect)) {
- 			steer = 1;
- 		} else {
-			steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
- 		}
+		if (networkView.isMine)
+			{
+			speed = rigidbody.velocity.sqrMagnitude;
+	 
+	 		if(Main.TouchingIn(UI.LeftRect)) {
+	 			steer = -1;
+	 		} else if(Main.TouchingIn(UI.RightRect)) {
+	 			steer = 1;
+	 		} else {
+				steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+	 		}
 
-		forward = Main.TouchingIn(UI.ARect) || Input.GetAxis("Vertical") > 0 ? 1 : 0;
-		back = Main.TouchingIn(UI.BRect) || Input.GetAxis("Vertical") < 0 ? 1 : 0;
+			forward = Main.TouchingIn(UI.ARect) || Input.GetAxis("Vertical") > 0 ? 1 : 0;
+			back = Main.TouchingIn(UI.BRect) || Input.GetAxis("Vertical") < 0 ? 1 : 0;
 
-		if(Mathf.Abs(speed) < 0.01) {
-	  	    if(back > 0) { reverse = true; }
-	        if(forward > 0) { reverse = false; }
-		}
-		 
-		if(reverse) {
-		  motor = -1 * back;
-		  brake = forward;
-		} else {
-		  motor = forward;
-		  brake = back;
-		}
+			if(Mathf.Abs(speed) < 0.01) {
+		  	    if(back > 0) { reverse = true; }
+		        if(forward > 0) { reverse = false; }
+			}
+			 
+			if(reverse) {
+			  motor = -1 * back;
+			  brake = forward;
+			} else {
+			  motor = forward;
+			  brake = back;
+			}
 
-		if(Mathf.Abs(speed) >= MaxSpeed){
-			motor = 0;
+			if(Mathf.Abs(speed) >= MaxSpeed){
+				motor = 0;
+			}
+			 
+			bl.motorTorque = MaxTorque * motor;
+			br.motorTorque = MaxTorque * motor;
+			bl.brakeTorque = MaxBreak * brake;
+			br.brakeTorque = MaxBreak * brake;
+			 
+			fl.steerAngle = MaxTurn * steer;
+			fr.steerAngle = MaxTurn * steer;
 		}
-		 
-		bl.motorTorque = MaxTorque * motor;
-		br.motorTorque = MaxTorque * motor;
-		bl.brakeTorque = MaxBreak * brake;
-		br.brakeTorque = MaxBreak * brake;
-		 
-		fl.steerAngle = MaxTurn * steer;
-		fr.steerAngle = MaxTurn * steer;
 	}
 }
