@@ -3,6 +3,8 @@ using System.Collections;
 
 public class NetworkManager : MonoBehaviour {
 
+	public static string CurrentRoomName;
+
 	public GameObject playerPrefab;
 
 	//MasterServer.ipAddress = “127.0.0.1″;
@@ -14,7 +16,7 @@ public class NetworkManager : MonoBehaviour {
 
 	private string GetNewRoomName()
 	{
-		return RandomString() + System.DateTime.UtcNow.ToString(" yyMMdd HH:mm");
+		return RandomString() + System.DateTime.UtcNow.ToString(" yyMMddHHmm");
 	}
 
 	private string RandomString()
@@ -30,8 +32,9 @@ public class NetworkManager : MonoBehaviour {
 	 
 	private void StartServer()
 	{
+		CurrentRoomName = GetNewRoomName();
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
-	    MasterServer.RegisterHost(GetServerTypeName(), GetNewRoomName());
+	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 	}
 
 	void OnServerInitialized()
@@ -64,6 +67,7 @@ public class NetworkManager : MonoBehaviour {
 
 	private void JoinServer(HostData hostData)
 	{
+		CurrentRoomName = hostData.gameName;
 	    Network.Connect(hostData);
 	}
 
