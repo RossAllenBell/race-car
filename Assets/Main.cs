@@ -18,9 +18,6 @@ public class Main : MonoBehaviour {
     private static Vector2 touchLocation;
     private static bool touching;
 
-    private Rect RoomNameRect;
-    private GUIStyle RoomNameStyle;
-
     public static float GuiRatioWidth;
     public static float GuiRatioHeight;
     public static float GuiRatio;
@@ -29,6 +26,8 @@ public class Main : MonoBehaviour {
     public static int FontLargest;
     public static int FontMedium;
     public static int FontSmallest;
+
+    public static GameObject Me;
 
 	public void Start () {
 		Screen.orientation = ScreenOrientation.Landscape;
@@ -40,12 +39,6 @@ public class Main : MonoBehaviour {
         FontLargest = (int) (NormalLargestFont * GuiRatio);
         FontMedium = (int) (NormalLargestFont * 0.50 * GuiRatio);
         FontSmallest = (int) (NormalLargestFont * 0.1 * GuiRatio);
-
-        RoomNameStyle = new GUIStyle();
-        RoomNameStyle.fontSize = Main.FontSmallest;
-        RoomNameStyle.normal.textColor = Color.red;
-        RoomNameStyle.alignment = TextAnchor.UpperLeft;
-        RoomNameRect = new Rect((Screen.width / 500), (Screen.width / 500), Screen.width, RoomNameStyle.CalcSize(new GUIContent("A")).y);
 	}
 	
 	public void Update () {
@@ -61,10 +54,6 @@ public class Main : MonoBehaviour {
         } else {
             click = false;
             touching = false;
-        }
-
-        if (NetworkManager.CurrentRoomName != null) {
-            GUI.Label(RoomNameRect, NetworkManager.CurrentRoomName, RoomNameStyle);
         }
 	}
 

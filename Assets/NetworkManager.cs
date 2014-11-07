@@ -49,7 +49,9 @@ public class NetworkManager : MonoBehaviour {
 	 
 	private void SpawnPlayer()
 	{
-	    CarFollow.SetPlayer((GameObject) Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0));
+		GameObject me = (GameObject) Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+	    CarFollow.SetPlayer(me);
+	    Main.Me = me;
 	}
 
 	private HostData[] hostList;

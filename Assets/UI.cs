@@ -5,6 +5,12 @@ public class UI : MonoBehaviour {
 
 	GUIStyle style;
 
+    public static  Rect RoomNameRect;
+    public static  GUIStyle RoomNameStyle;
+
+    public static  Rect CarStatsRect;
+    public static  GUIStyle CarStatsStyle;
+
 	public static Rect LeftRect;
 	public static Rect RightRect;
 	public static Rect ARect;
@@ -29,6 +35,19 @@ public class UI : MonoBehaviour {
 			RightRect = new Rect((NormalButtonpadding * guiRatio * 2) + (NormalButtonWidth * guiRatio * 2), Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 			ARect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio * 2), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 			BRect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
+
+		    RoomNameStyle = new GUIStyle();
+		    RoomNameStyle.fontSize = Main.FontSmallest;
+		    RoomNameStyle.normal.textColor = Color.red;
+		    RoomNameStyle.alignment = TextAnchor.UpperLeft;
+		    RoomNameRect = new Rect((Screen.width / 500), (Screen.width / 500), Screen.width, RoomNameStyle.CalcSize(new GUIContent("A")).y);
+
+			CarStatsStyle = new GUIStyle();
+		    CarStatsStyle.fontSize = Main.FontSmallest;
+		    CarStatsStyle.normal.textColor = Color.red;
+		    CarStatsStyle.alignment = TextAnchor.UpperRight;
+		    CarStatsRect = new Rect(0, (Screen.width / 500), Screen.width - (Screen.width / 500), Screen.height);
+
 			lastKnownScreenWidth = Screen.width;
 		}
 		// LeftRect = new Rect(20, Screen.height - 120, 100, 100);
@@ -41,5 +60,13 @@ public class UI : MonoBehaviour {
 		GUI.Box(RightRect, GUIContent.none, style);
 		GUI.Box(ARect, GUIContent.none, style);
 		GUI.Box(BRect, GUIContent.none, style);
+
+        if (NetworkManager.CurrentRoomName != null) {
+            GUI.Label(RoomNameRect, NetworkManager.CurrentRoomName, RoomNameStyle);
+        }
+
+        if (Main.Me) {
+        	GUI.Label(CarStatsRect, Main.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.Me.transform.rotation.eulerAngles, CarStatsStyle);
+        }
 	}
 }

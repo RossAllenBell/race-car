@@ -21,6 +21,8 @@ public class Car : MonoBehaviour {
 	private float speed = 0;
 	private bool reverse = false;
 
+	private float forwardDown = 0;
+
 	void Start () {
 		rigidbody.centerOfMass = new Vector3(0, -0.5f, 0);
 	}
@@ -32,7 +34,7 @@ public class Car : MonoBehaviour {
 	void FixedUpdate () {
 		if (networkView.isMine)
 			{
-			speed = rigidbody.velocity.sqrMagnitude;
+			speed = rigidbody.velocity.magnitude;
 	 
 	 		if(Main.TouchingIn(UI.LeftRect)) {
 	 			steer = -1;
@@ -69,6 +71,16 @@ public class Car : MonoBehaviour {
 			 
 			fl.steerAngle = MaxTurn * steer;
 			fr.steerAngle = MaxTurn * steer;
+
+			if (forward == 0 || rigidbody.velocity.magnitude > 1f) {
+				forwardDown = 0;
+			} else {
+				forwardDown += Time.fixedDeltaTime;
+				if (forwardDown > 3 && rigidbody.velocity.magnitude < 1f) {
+					rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
+					rigidbody.AddRelativeTorque(Vector3.forward * 25);
+				}
+			}
 		}
 	}
 }
