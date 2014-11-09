@@ -36,11 +36,9 @@ public class Car : MonoBehaviour {
 		if (networkView.isMine) {
 			if (hasMissile && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
 				hasMissile = false;
-				GameObject missile = (GameObject) Network.Instantiate(missilePrefab, new Vector3(0f, -10f, 0f), Quaternion.identity, 0);
-				missile.GetComponent<Missile>().Firer = gameObject;
-				missile.transform.position = transform.position;
-				missile.transform.rotation = transform.rotation;
-				missile.transform.Rotate(Vector3.right * 90f);
+				Vector3 pos = transform.position;
+				Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles.x + 90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+				Network.Instantiate(missilePrefab, pos, rot, 0);
 			}
 		}
 	}
@@ -106,5 +104,5 @@ public class Car : MonoBehaviour {
 	public void GetMissile() {
 		hasMissile = true;
 	}
-	
+
 }

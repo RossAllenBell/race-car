@@ -3,13 +3,7 @@ using System.Collections;
 
 public class Missile : MonoBehaviour {
 
-	private GameObject firer = null;
-	public GameObject Firer {
-		get {return firer;}
-		set {this.firer = value;}
-	}
-
-	private bool impacted = false;
+	bool impacted = false;
 
 	void Start () {
 	
@@ -18,26 +12,20 @@ public class Missile : MonoBehaviour {
 	void FixedUpdate () {
 		transform.Translate(Vector3.up * 50 * Time.fixedDeltaTime);
 
-		if(Network.isServer && transform.position.magnitude > 200){
+		if(networkView.isMine && (impacted || transform.position.magnitude > 200)){
 			Network.RemoveRPCs(networkView.viewID);
 	        Network.Destroy(gameObject);
 		}
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if(impacted) return;
-
-		Debug.Log(other.transform.root.gameObject);
-		if (firer == null && other.transform.root.gameObject == Main.Me) {
+		GameObject collidingObject = other.transform.root.gameObject;
+		if(networkView.isMine && collidingObject != Main.Me){
 			impacted = true;
-			other.transform.root.rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
-			other.transform.root.rigidbody.AddRelativeTorque(Vector3.forward * 25);
-			Network.RemoveRPCs(networkView.viewID);
-	        Network.Destroy(gameObject);
-	    } else if(Network.isServer && other.transform.root.gameObject.tag != "Player") {
-	  //   	Debug.Log(3);
-			// Network.RemoveRPCs(networkView.viewID);
-	  //       Network.Destroy(gameObject);
-	    }
+		} else if(!impacted && !networkView.isMine && collidingObject == Main.Me) {
+			impacted = true;
+			collidingObject.rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
+			collidingObject.rigidbody.AddRelativeTorque(Vector3.forward * 25);
+		}
     }
 }
