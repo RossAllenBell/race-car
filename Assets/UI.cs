@@ -3,7 +3,11 @@ using System.Collections;
 
 public class UI : MonoBehaviour {
 
-	GUIStyle style;
+	public static Texture2D Left = Resources.Load("left") as Texture2D;
+    public static Texture2D Right = Resources.Load("right") as Texture2D;
+    public static Texture2D Backwards = Resources.Load("backwards") as Texture2D;
+    public static Texture2D Trigger = Resources.Load("trigger") as Texture2D;
+    public static Texture2D TriggerDisabled = Resources.Load("trigger-disabled") as Texture2D;
 
     public static  Rect RoomNameRect;
     public static  GUIStyle RoomNameStyle;
@@ -21,11 +25,7 @@ public class UI : MonoBehaviour {
 	public int NormalButtonpadding = 40;
 
 	void Start () {
-		style = new GUIStyle();
-		var texture = new Texture2D(1,1);
-	    texture.SetPixel(0,0,new Color(1f,0f,0f,0.5f));
-	    texture.Apply();
-		style.normal.background = texture;
+
 	}
 
 	void Update () {
@@ -56,17 +56,22 @@ public class UI : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		GUI.Box(LeftRect, GUIContent.none, style);
-		GUI.Box(RightRect, GUIContent.none, style);
-		GUI.Box(ARect, GUIContent.none, style);
-		GUI.Box(BRect, GUIContent.none, style);
-
         if (NetworkManager.CurrentRoomName != null) {
             GUI.Label(RoomNameRect, NetworkManager.CurrentRoomName, RoomNameStyle);
         }
 
         if (Main.Me) {
         	GUI.Label(CarStatsRect, Main.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.Me.transform.rotation.eulerAngles, CarStatsStyle);
+
+			GUI.DrawTexture(LeftRect, Left);
+			GUI.DrawTexture(RightRect, Right);
+			GUI.DrawTexture(BRect, Backwards);
+
+			if (Main.Me.GetComponent<Car>().HasMissile) {
+				GUI.DrawTexture(ARect, Trigger);
+			} else {
+				GUI.DrawTexture(ARect, TriggerDisabled);
+			}
         }
 	}
 }

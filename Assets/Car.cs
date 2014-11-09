@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Car : MonoBehaviour {
 
+	public GameObject missilePrefab;
+
 	public WheelCollider fl;
 	public WheelCollider fr;
 	public WheelCollider bl;
@@ -23,17 +25,29 @@ public class Car : MonoBehaviour {
 
 	private float forwardDown = 0;
 
+	private bool hasMissile = false;
+	public bool HasMissile { get { return hasMissile; } }
+
 	void Start () {
 		rigidbody.centerOfMass = new Vector3(0, -0.5f, 0);
 	}
 	
 	void Update () {
-	
+		if (networkView.isMine) {
+			if (hasMissile && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
+				hasMissile = false;
+				GameObject missile = (GameObject) Network.Instantiate(missilePrefab, new Vector3(0f, -10f, 0f), Quaternion.identity, 0);
+				missile.GetComponent<Missile>().Firer = gameObject;
+				missile.transform.position = transform.position;
+				missile.transform.rotation = transform.rotation;
+				missile.transform.Rotate(Vector3.right * 90f);
+			}
+		}
 	}
 
+	private bool keyboardDetected = false;
 	void FixedUpdate () {
-		if (networkView.isMine)
-			{
+		if (networkView.isMine) {
 			speed = rigidbody.velocity.magnitude;
 	 
 	 		if(Main.TouchingIn(UI.LeftRect)) {
@@ -44,8 +58,13 @@ public class Car : MonoBehaviour {
 				steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
 	 		}
 
-			forward = Main.TouchingIn(UI.ARect) || Input.GetAxis("Vertical") > 0 ? 1 : 0;
+	 		keyboardDetected = keyboardDetected || Input.GetAxis("Vertical") != 0;
 			back = Main.TouchingIn(UI.BRect) || Input.GetAxis("Vertical") < 0 ? 1 : 0;
+			if (keyboardDetected) {
+				forward = Input.GetAxis("Vertical") > 0 ? 1 : 0;
+			} else {
+				forward = 1 - back;
+			}
 
 			if(Mathf.Abs(speed) < 0.01) {
 		  	    if(back > 0) { reverse = true; }
@@ -83,4 +102,9 @@ public class Car : MonoBehaviour {
 			}
 		}
 	}
+
+	public void GetMissile() {
+		hasMissile = true;
+	}
+	
 }

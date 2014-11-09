@@ -73,6 +73,11 @@ public class NetworkManager : MonoBehaviour {
 	    Network.Connect(hostData);
 	}
 
+	public void OnPlayerDisconnected(NetworkPlayer player) {
+        Network.RemoveRPCs(player);
+        Network.DestroyPlayerObjects(player);
+    }
+
 	void Start ()
 	{
 	

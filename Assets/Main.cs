@@ -29,6 +29,10 @@ public class Main : MonoBehaviour {
 
     public static GameObject Me;
 
+    public static List<GameObject> GoodyBoxes;
+
+    public GameObject goodyBoxPrefab;
+
 	public void Start () {
 		Screen.orientation = ScreenOrientation.Landscape;
 
@@ -39,10 +43,26 @@ public class Main : MonoBehaviour {
         FontLargest = (int) (NormalLargestFont * GuiRatio);
         FontMedium = (int) (NormalLargestFont * 0.50 * GuiRatio);
         FontSmallest = (int) (NormalLargestFont * 0.1 * GuiRatio);
+
+        GoodyBoxes = new List<GameObject>();
 	}
 	
 	public void Update () {
+        if (Network.isServer) {
+            for (int i = GoodyBoxes.Count - 1; i >= 0; i--) {
+                if (GoodyBoxes[i] == null) {
+                    GoodyBoxes.RemoveAt(i);
+                }
+            }
 
+            while (GoodyBoxes.Count < 2) {
+                float x = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
+                float y = 1f;
+                float z = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
+                GameObject goodyBox = (GameObject) Network.Instantiate(goodyBoxPrefab, new Vector3(x, y, z), Quaternion.identity, 0);
+                GoodyBoxes.Add(goodyBox);
+            }
+        }
     }
 
     public void OnGUI(){
