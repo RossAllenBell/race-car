@@ -101,6 +101,12 @@ public class Car : MonoBehaviour {
 		}
 	}
 
+	[RPC]
+    void MissileHit() {
+        rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
+		rigidbody.AddRelativeTorque(Vector3.forward * 25);
+    }
+
 	public void GetMissile() {
 		hasMissile = true;
 	}

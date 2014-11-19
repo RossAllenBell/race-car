@@ -12,20 +12,19 @@ public class Missile : MonoBehaviour {
 	void FixedUpdate () {
 		transform.Translate(Vector3.up * 50 * Time.fixedDeltaTime);
 
-		if(networkView.isMine && (impacted || transform.position.magnitude > 200)){
+		if(Network.isServer && (impacted || transform.position.magnitude > 200)){
 			Network.RemoveRPCs(networkView.viewID);
 	        Network.Destroy(gameObject);
 		}
 	}
 
 	void OnTriggerEnter(Collider other) {
-		GameObject collidingObject = other.transform.root.gameObject;
-		if(networkView.isMine && collidingObject != Main.Me){
-			impacted = true;
-		} else if(!impacted && !networkView.isMine && collidingObject == Main.Me) {
-			impacted = true;
-			collidingObject.rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
-			collidingObject.rigidbody.AddRelativeTorque(Vector3.forward * 25);
+		if (Network.isServer) {
+			GameObject collidingObject = other.gameObject;
+			if(collidingObject.networkView && collidingObject.networkView.owner != networkView.owner){
+				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
+				impacted = true;
+			}
 		}
     }
 }
