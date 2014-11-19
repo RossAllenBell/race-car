@@ -35,10 +35,7 @@ public class Car : MonoBehaviour {
 	void Update () {
 		if (networkView.isMine) {
 			if (hasMissile && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
-				hasMissile = false;
-				Vector3 pos = transform.position;
-				Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles.x + 90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-				Network.Instantiate(missilePrefab, pos, rot, 0);
+				networkView.RPC("FireMissile", RPCMode.All);
 			}
 		}
 	}
@@ -107,8 +104,20 @@ public class Car : MonoBehaviour {
 		rigidbody.AddRelativeTorque(Vector3.forward * 25);
     }
 
-	public void GetMissile() {
+    [RPC]
+	void GetMissile() {
 		hasMissile = true;
+	}
+
+    [RPC]
+	void FireMissile() {
+		hasMissile = false;
+		if(Network.isServer){
+			Vector3 pos = transform.position;
+			Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles.x + 90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+			GameObject missile = (GameObject) Network.Instantiate(missilePrefab, pos, rot, 0);
+			missile.networkView.RPC("SetFirer", RPCMode.All, gameObject.networkView.owner);
+		}
 	}
 
 }

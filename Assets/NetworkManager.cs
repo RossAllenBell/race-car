@@ -80,7 +80,7 @@ public class NetworkManager : MonoBehaviour {
 
 	void Start ()
 	{
-	
+	    RefreshHostList();
 	}
 	
 	void Update ()

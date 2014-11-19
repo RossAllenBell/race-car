@@ -12,10 +12,10 @@ public class GoodyBox : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if(other.transform.root.gameObject == Main.Me) {
+		if (Network.isServer) {
 			Car car = other.transform.root.GetComponent<Car>();
 			if (!car.HasMissile) {
-				car.GetMissile();
+				car.networkView.RPC("GetMissile", RPCMode.All);;
 				Network.RemoveRPCs(networkView.viewID);
 		        Network.Destroy(gameObject);
 		    }
