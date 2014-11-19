@@ -3,11 +3,11 @@ using System.Collections;
 
 public class Missile : MonoBehaviour {
 
-	private bool impacted = false;
+	private bool impacted;
 	private NetworkPlayer firer;
 
 	void Start () {
-	
+	    impacted = false;
 	}
 	
 	void FixedUpdate () {
@@ -20,7 +20,7 @@ public class Missile : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (Network.isServer && firer != null) {
+		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject;
 			if(collidingObject.networkView && collidingObject.networkView.owner != firer){
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
