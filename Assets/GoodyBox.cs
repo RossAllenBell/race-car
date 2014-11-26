@@ -4,7 +4,10 @@ using System.Collections;
 public class GoodyBox : MonoBehaviour {
 
 	void Start () {
-
+		Ray ray = new Ray(transform.position, -transform.up);
+		RaycastHit hit;
+		Physics.Raycast(ray, out hit);
+		transform.position += (-transform.up * (hit.distance - collider.bounds.extents.x));
 	}
 	
 	void Update () {
