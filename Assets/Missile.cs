@@ -3,16 +3,19 @@ using System.Collections;
 
 public class Missile : MonoBehaviour {
 
+	public float speed;
+
 	private bool impacted;
 	private NetworkPlayer firer;
 
 	void Start () {
-	    impacted = false;
+		if (Network.isServer) {
+		    impacted = false;
+		    rigidbody.AddRelativeForce(Vector3.up * speed);
+		}
 	}
 	
 	void FixedUpdate () {
-		transform.Translate(Vector3.up * 50 * Time.fixedDeltaTime);
-
 		if(Network.isServer && (impacted || transform.position.magnitude > 200)){
 			Network.RemoveRPCs(networkView.viewID);
 	        Network.Destroy(gameObject);
@@ -22,9 +25,11 @@ public class Missile : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject;
-			if(collidingObject.networkView && collidingObject.networkView.owner != firer){
-				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
+			if(collidingObject.networkView == null || collidingObject.networkView.owner != firer){
 				impacted = true;
+				if(collidingObject.GetComponent<Car>()){
+					collidingObject.networkView.RPC("MissileHit", RPCMode.All);
+				}
 			}
 		}
     }
