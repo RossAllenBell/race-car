@@ -11,6 +11,7 @@ public class Car : MonoBehaviour {
 	public WheelCollider br;
 
 	public float MaxTurn;
+	public float TurnIncreaseRate;
 	public float MaxTorque;
 	public float MaxBreak;
 	public float MaxSpeed;
@@ -45,13 +46,18 @@ public class Car : MonoBehaviour {
 		if (networkView.isMine) {
 			speed = rigidbody.velocity.magnitude;
 	 
-	 		if(Main.TouchingIn(UI.LeftRect)) {
-	 			steer = -1;
-	 		} else if(Main.TouchingIn(UI.RightRect)) {
-	 			steer = 1;
-	 		} else {
-				steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+	 		if(Main.TouchingIn(UI.LeftRect) || Input.GetKey("left")) {
+	 			steer -= TurnIncreaseRate * Time.fixedDeltaTime;
+	 		} else if(Main.TouchingIn(UI.RightRect) || Input.GetKey("right")) {
+	 			steer += TurnIncreaseRate * Time.fixedDeltaTime;
+	 		} else if(steer != 0) {
+	 			if(steer > 0){
+	 				steer = Mathf.Max(0f, steer - (TurnIncreaseRate * Time.fixedDeltaTime * 2f));
+ 				} else {
+ 					steer = Mathf.Min(0f, steer + (TurnIncreaseRate * Time.fixedDeltaTime * 2f));
+ 				}
 	 		}
+	 		steer = Mathf.Clamp(steer, -1, 1);
 
 	 		keyboardDetected = keyboardDetected || Input.GetAxis("Vertical") != 0;
 			back = Main.TouchingIn(UI.BRect) || Input.GetAxis("Vertical") < 0 ? 1 : 0;
