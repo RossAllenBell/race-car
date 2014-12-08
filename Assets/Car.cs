@@ -48,8 +48,10 @@ public class Car : MonoBehaviour {
 	 
 	 		if(Main.TouchingIn(UI.LeftRect) || Input.GetKey("left")) {
 	 			steer -= TurnIncreaseRate * Time.fixedDeltaTime;
+	 			if(steer > 0) steer -= TurnIncreaseRate * Time.fixedDeltaTime;
 	 		} else if(Main.TouchingIn(UI.RightRect) || Input.GetKey("right")) {
 	 			steer += TurnIncreaseRate * Time.fixedDeltaTime;
+	 			if(steer < 0) steer += TurnIncreaseRate * Time.fixedDeltaTime;
 	 		} else if(steer != 0) {
 	 			if(steer > 0){
 	 				steer = Mathf.Max(0f, steer - (TurnIncreaseRate * Time.fixedDeltaTime * 2f));

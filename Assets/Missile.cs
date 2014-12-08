@@ -5,6 +5,7 @@ public class Missile : MonoBehaviour {
 
 	public float speed;
 
+	private bool live;
 	private bool impacted;
 	private NetworkPlayer firer;
 
@@ -22,14 +23,25 @@ public class Missile : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
+	void OnCollisionEnter(Collision other) {
 		if (Network.isServer) {
-			GameObject collidingObject = other.gameObject;
-			if(collidingObject.networkView == null || collidingObject.networkView.owner != firer){
+			GameObject collidingObject = other.gameObject.transform.root.gameObject;
+			if(collidingObject.GetComponent<Car>()){
 				impacted = true;
-				if(collidingObject.GetComponent<Car>()){
-					collidingObject.networkView.RPC("MissileHit", RPCMode.All);
-				}
+				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
+			}
+			if(collidingObject.GetComponent<Missile>()){
+				impacted = true;
+			}
+		}
+    }
+
+	void OnTriggerExit(Collider other) {
+		if (Network.isServer) {
+			GameObject collidingObject = other.gameObject.transform.root.gameObject;
+			if(collidingObject.networkView.owner == firer){
+				GetComponent<Collider>().isTrigger = false;
+				rigidbody.useGravity = true;
 			}
 		}
     }
