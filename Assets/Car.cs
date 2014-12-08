@@ -125,9 +125,7 @@ public class Car : MonoBehaviour {
 	void FireMissile() {
 		hasMissile = false;
 		if(Network.isServer){
-			Vector3 pos = transform.position;
-			Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles.x + 90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-			GameObject missile = (GameObject) Network.Instantiate(missilePrefab, pos, rot, 0);
+			GameObject missile = (GameObject) Network.Instantiate(missilePrefab, transform.position, transform.rotation, 0);
 			missile.networkView.RPC("SetFirer", RPCMode.All, gameObject.networkView.owner);
 		}
 	}

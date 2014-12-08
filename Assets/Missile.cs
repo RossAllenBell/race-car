@@ -11,7 +11,7 @@ public class Missile : MonoBehaviour {
 	void Start () {
 		if (Network.isServer) {
 		    impacted = false;
-		    rigidbody.AddRelativeForce(Vector3.up * speed);
+		    rigidbody.AddRelativeForce(Vector3.forward * speed);
 		}
 	}
 	
