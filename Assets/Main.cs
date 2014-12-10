@@ -57,7 +57,7 @@ public class Main : MonoBehaviour {
 
             while (GoodyBoxes.Count < (Network.connections.Length + 1) * 2) {
                 float x = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
-                float y = 100f;
+                float y = 24f;
                 float z = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
                 GameObject goodyBox = (GameObject) Network.Instantiate(goodyBoxPrefab, new Vector3(x, y, z), Quaternion.identity, 0);
                 GoodyBoxes.Add(goodyBox);

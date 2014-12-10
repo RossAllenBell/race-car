@@ -17,9 +17,13 @@ public class Missile : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-		if(Network.isServer && (impacted || transform.position.magnitude > 200)){
-			Network.RemoveRPCs(networkView.viewID);
-	        Network.Destroy(gameObject);
+		if(Network.isServer){
+			if(impacted || transform.position.magnitude > 200){
+				Network.RemoveRPCs(networkView.viewID);
+		        Network.Destroy(gameObject);
+	        } else {
+	        	rigidbody.AddForce(Vector3.down * 10);
+	        }
 		}
 	}
 
@@ -29,8 +33,7 @@ public class Missile : MonoBehaviour {
 			if(collidingObject.GetComponent<Car>()){
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
-			}
-			if(collidingObject.GetComponent<Missile>()){
+			} else if(collidingObject.GetComponent<Missile>()){
 				impacted = true;
 			}
 		}
