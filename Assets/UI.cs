@@ -12,6 +12,9 @@ public class UI : MonoBehaviour {
     public static  Rect RoomNameRect;
     public static  GUIStyle RoomNameStyle;
 
+    public static  Rect GameStatsRect;
+    public static  GUIStyle GameStatsStyle;
+
     public static  Rect CarStatsRect;
     public static  GUIStyle CarStatsStyle;
 
@@ -46,6 +49,12 @@ public class UI : MonoBehaviour {
 		    RoomNameStyle.alignment = TextAnchor.UpperLeft;
 		    RoomNameRect = new Rect((Screen.width / 500), (Screen.width / 500), Screen.width, RoomNameStyle.CalcSize(new GUIContent("A")).y);
 
+		    GameStatsStyle = new GUIStyle();
+		    GameStatsStyle.fontSize = Main.FontSmallest;
+		    GameStatsStyle.normal.textColor = Color.red;
+		    GameStatsStyle.alignment = TextAnchor.UpperLeft;
+		    GameStatsRect = new Rect((Screen.width / 500), (Screen.width / 500) + ( GameStatsStyle.CalcSize(new GUIContent("A")).y * 2), Screen.width, Screen.height);
+
 			CarStatsStyle = new GUIStyle();
 		    CarStatsStyle.fontSize = Main.FontSmallest;
 		    CarStatsStyle.normal.textColor = Color.red;
@@ -63,6 +72,12 @@ public class UI : MonoBehaviour {
         if (NetworkManager.CurrentRoomName != null) {
             GUI.Label(RoomNameRect, NetworkManager.CurrentRoomName, RoomNameStyle);
         }
+
+        string gameStats = "";
+        foreach(PlayerStat stat in Main.Players.Values){
+        	gameStats = gameStats + stat.name + " " + stat.score + "\n";
+        }
+        GUI.Label(GameStatsRect, gameStats, GameStatsStyle);
 
         if (Main.Me) {
         	GUI.Label(CarStatsRect, Main.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.Me.transform.rotation.eulerAngles, CarStatsStyle);

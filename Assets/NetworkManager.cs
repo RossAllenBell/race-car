@@ -35,6 +35,8 @@ public class NetworkManager : MonoBehaviour {
 		CurrentRoomName = GetNewRoomName();
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
+
+	    Main.Players.Add(Network.player, new PlayerStat(RandomString()));
 	}
 
 	void OnServerInitialized()
@@ -45,6 +47,12 @@ public class NetworkManager : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 	    SpawnPlayer();
+	}
+
+	void OnPlayerConnected(NetworkPlayer player)
+	{
+		 Main.Players.Add(player, new PlayerStat(RandomString()));
+		 Main.PlayersUpdate = true;
 	}
 	 
 	private void SpawnPlayer()

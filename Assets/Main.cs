@@ -33,6 +33,9 @@ public class Main : MonoBehaviour {
 
     public GameObject goodyBoxPrefab;
 
+    public static Dictionary<NetworkPlayer, PlayerStat> Players;
+    public static bool PlayersUpdate;
+
 	public void Start () {
 		Screen.orientation = ScreenOrientation.Landscape;
 
@@ -43,6 +46,9 @@ public class Main : MonoBehaviour {
         FontLargest = (int) (NormalLargestFont * GuiRatio);
         FontMedium = (int) (NormalLargestFont * 0.50 * GuiRatio);
         FontSmallest = (int) (NormalLargestFont * 0.1 * GuiRatio);
+
+        Players = new Dictionary<NetworkPlayer, PlayerStat>();
+        PlayersUpdate = false;
 
         GoodyBoxes = new List<GameObject>();
 	}
@@ -61,6 +67,13 @@ public class Main : MonoBehaviour {
                 float z = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
                 GameObject goodyBox = (GameObject) Network.Instantiate(goodyBoxPrefab, new Vector3(x, y, z), Quaternion.identity, 0);
                 GoodyBoxes.Add(goodyBox);
+            }
+
+            if(PlayersUpdate){
+                PlayersUpdate = false;
+                foreach(NetworkPlayer nPlayer in Players.Keys){
+                    gameObject.networkView.RPC("UpdatePlayerStat", RPCMode.All, nPlayer, Players[nPlayer].name, Players[nPlayer].score);
+                }
             }
         }
     }
@@ -89,6 +102,15 @@ public class Main : MonoBehaviour {
             }
         }
         return Input.GetMouseButton(0) && GuiSpaceRect.Contains(TouchLocationToGuiLocation(Input.mousePosition));
+    }
+
+    [RPC]
+    void UpdatePlayerStat(NetworkPlayer nPlayer, string name, int score) {
+        if(!Players.ContainsKey(nPlayer)){
+            Players[nPlayer] = new PlayerStat(name);
+        }
+
+        Players[nPlayer].score = score;
     }
 
 }

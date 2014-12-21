@@ -30,7 +30,14 @@ public class Missile : MonoBehaviour {
 	void OnCollisionEnter(Collision other) {
 		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject.transform.root.gameObject;
-			if(collidingObject.GetComponent<Car>()){
+			Car car;
+			if(car = collidingObject.GetComponent<Car>()){
+				if(firer == car.networkView.owner){
+					Main.Players[firer].score -= 2;
+				} else {
+					Main.Players[firer].score += 5;
+				}
+				Main.PlayersUpdate = true;
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
 			} else if(collidingObject.GetComponent<Missile>()){
