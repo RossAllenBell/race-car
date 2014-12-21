@@ -12,7 +12,7 @@ public class Missile : MonoBehaviour {
 	void Start () {
 		if (Network.isServer) {
 		    impacted = false;
-		    rigidbody.AddRelativeForce(Vector3.forward * speed);
+			rigidbody.AddRelativeForce(Vector3.forward * speed * 5);
 		}
 	}
 	
@@ -21,9 +21,21 @@ public class Missile : MonoBehaviour {
 			if(impacted || transform.position.magnitude > 200){
 				Network.RemoveRPCs(networkView.viewID);
 		        Network.Destroy(gameObject);
-	        } else {
+	        } else if(rigidbody.useGravity) {
 	        	rigidbody.AddForce(Vector3.down * 10);
 	        }
+		}
+	}
+	
+	void LateUpdate () {
+		if(Network.isServer){
+			if(rigidbody.useGravity){
+				if(rigidbody.velocity.magnitude > speed + 1) {
+					rigidbody.AddForce(-rigidbody.velocity.normalized / 10f);
+				} else if(rigidbody.velocity.magnitude < speed) {
+					rigidbody.AddForce(rigidbody.velocity.normalized / 10f);
+				}
+			}
 		}
 	}
 
@@ -49,7 +61,7 @@ public class Missile : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject.transform.root.gameObject;
-			if(collidingObject.networkView.owner == firer){
+			if(collidingObject.networkView && collidingObject.networkView.owner == firer){
 				GetComponent<Collider>().isTrigger = false;
 				rigidbody.useGravity = true;
 			}

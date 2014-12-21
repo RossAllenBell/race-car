@@ -86,6 +86,10 @@ public class Car : MonoBehaviour {
 				motor = 0;
 			}
 			 
+			fl.motorTorque = MaxTorque * motor;
+			fr.motorTorque = MaxTorque * motor;
+			fl.brakeTorque = MaxBreak * brake;
+			fr.brakeTorque = MaxBreak * brake;
 			bl.motorTorque = MaxTorque * motor;
 			br.motorTorque = MaxTorque * motor;
 			bl.brakeTorque = MaxBreak * brake;
