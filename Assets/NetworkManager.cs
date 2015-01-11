@@ -84,6 +84,8 @@ public class NetworkManager : MonoBehaviour {
 	public void OnPlayerDisconnected(NetworkPlayer player) {
         Network.RemoveRPCs(player);
         Network.DestroyPlayerObjects(player);
+        Main.Players.Remove(player);
+		Main.PlayersUpdate = true;
     }
 
 	void Start ()
