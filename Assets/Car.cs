@@ -109,16 +109,20 @@ public class Car : MonoBehaviour {
 		}
 	}
 
+	private Vector3 RandomJoltVector(){
+		float drift = 0.3f;
+    	Vector2 xz = new Vector2((Random.value * drift * 2f) - (drift / 2f), (Random.value * drift * 2f) - (drift / 2f));
+        return new Vector3(xz.x, 1f, xz.y);
+	}
+
 	private void UnstickJolt(){
-		rigidbody.AddForce(new Vector3(0.1f, 1f, 0.1f) * 400);
+		rigidbody.AddForce(RandomJoltVector() * 400);
 		rigidbody.AddRelativeTorque(Vector3.forward * 25);
 	}
 
 	[RPC]
     void MissileHit() {
-    	float drift = 0.3f;
-    	Vector2 xz = new Vector2((Random.value * drift * 2f) - (drift / 2f), (Random.value * drift * 2f) - (drift / 2f));
-        rigidbody.AddForce(new Vector3(xz.x, 1f, xz.y) * 400);
+    	rigidbody.AddForce(RandomJoltVector() * 400);
 		rigidbody.AddRelativeTorque(Vector3.forward * 30f);
     }
 
