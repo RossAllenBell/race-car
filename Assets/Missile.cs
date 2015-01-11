@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Missile : MonoBehaviour {
 
+	public GameObject explosionPrefab;
+
 	public float speed;
 
 	private bool live;
@@ -21,6 +23,7 @@ public class Missile : MonoBehaviour {
 			if(impacted || transform.position.magnitude > 200){
 				Network.RemoveRPCs(networkView.viewID);
 		        Network.Destroy(gameObject);
+		        Network.Instantiate(explosionPrefab, transform.position, transform.rotation, 0);
 	        } else if(rigidbody.useGravity) {
 	        	rigidbody.AddForce(Vector3.down * 10);
 	        }
