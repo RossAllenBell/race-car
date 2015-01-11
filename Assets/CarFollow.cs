@@ -8,20 +8,25 @@ public class CarFollow : MonoBehaviour {
 
 	public static GameObject player;
 
+	private Vector3 followTranslate = (Vector3.back * 6) + (Vector3.up * 2);
+
 	void Start () {
-		//player = GameObject.FindWithTag ("PlayerCameraChase");
+
 	}
 	
 	void FixedUpdate () {
 		if (player)
 		{
-			transform.position = Vector3.Lerp(transform.position, player.transform.position, PositionChaseLerp);
-			transform.rotation = Quaternion.Slerp(transform.rotation, player.transform.rotation, RotationChaseSlerp);
+			Quaternion newRotation = Quaternion.Slerp(transform.rotation, player.transform.rotation, RotationChaseSlerp);
+			transform.rotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0);
+
+			transform.position = Vector3.Slerp(transform.position, player.transform.position, PositionChaseLerp);
+			transform.Translate(followTranslate);
 		}
 	}
 
 	public static void SetPlayer (GameObject aPlayer)
 	{
-		player = GameObject.FindWithTag ("PlayerCameraChase");
+		player = aPlayer;
 	}
 }
