@@ -1222,8 +1222,8 @@ MonoBehaviour:
   br: {fileID: 14600000}
   MaxTurn: 10
   TurnIncreaseRate: 2.5
-  MaxTorque: 3
-  MaxBreak: 5
+  MaxTorque: 6
+  MaxBreak: 10
   MaxSpeed: 20
 --- !u!136 &13600000
 CapsuleCollider:
