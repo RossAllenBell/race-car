@@ -4,6 +4,7 @@ using System.Collections;
 public class Missile : MonoBehaviour {
 
 	public GameObject explosionPrefab;
+	public Material deadMaterial;
 
 	public float speed;
 
@@ -11,8 +12,11 @@ public class Missile : MonoBehaviour {
 	private bool impacted;
 	private NetworkPlayer firer;
 
+	private bool bounced;
+
 	void Start () {
 		if (Network.isServer) {
+			bounced = false;
 		    impacted = false;
 			rigidbody.AddRelativeForce(Vector3.forward * speed * 5);
 		}
@@ -48,15 +52,19 @@ public class Missile : MonoBehaviour {
 			Car car;
 			if(car = collidingObject.GetComponent<Car>()){
 				if(firer == car.networkView.owner){
-					Main.Players[firer].score -= 2;
+					Main.Players[firer].score -= bounced? 1 : 2;
 				} else {
-					Main.Players[firer].score += 5;
+					Main.Players[firer].score += bounced? 1 : 5;
 				}
 				Main.PlayersUpdate = true;
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
 			} else if(collidingObject.GetComponent<Missile>()){
 				impacted = true;
+			} else if(!bounced && collidingObject.tag == "Wall") {
+				bounced = true;
+				GetComponent<MeshRenderer>().material = deadMaterial;
+				Destroy(GetComponent<TrailRenderer>());
 			}
 		}
     }

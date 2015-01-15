@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 100000, guid: 55180af4376182d47b6cf9fb397d706b, type: 2}
+  deadMaterial: {fileID: 2100000, guid: 567fd0d8de79ab343a850aa3e5a1c86b, type: 2}
   speed: 75
 --- !u!135 &13500000
 SphereCollider:
