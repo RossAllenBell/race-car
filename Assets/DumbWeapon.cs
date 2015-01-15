@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Missile : MonoBehaviour {
+public class DumbWeapon : MonoBehaviour {
 
 	public GameObject explosionPrefab;
 	public Material deadMaterial;
@@ -14,7 +14,7 @@ public class Missile : MonoBehaviour {
 
 	private bool bounced;
 
-	void Start () {
+	void Start () { 
 		if (Network.isServer) {
 			bounced = false;
 		    impacted = false;
@@ -59,7 +59,7 @@ public class Missile : MonoBehaviour {
 				Main.PlayersUpdate = true;
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
-			} else if(collidingObject.GetComponent<Missile>()){
+			} else if(collidingObject.GetComponent<DumbWeapon>()){
 				impacted = true;
 			} else if(!bounced && collidingObject.tag == "Wall") {
 				bounced = true;
