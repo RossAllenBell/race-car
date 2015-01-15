@@ -66,8 +66,7 @@ public class DumbWeapon : MonoBehaviour {
 				impacted = true;
 			} else if(!bounced && collidingObject.tag == "Wall") {
 				bounced = true;
-				GetComponent<MeshRenderer>().material = deadMaterial;
-				Destroy(GetComponent<TrailRenderer>());
+				networkView.RPC("SetDead", RPCMode.All);
 			}
 		}
     }
@@ -81,6 +80,12 @@ public class DumbWeapon : MonoBehaviour {
 			}
 		}
     }
+
+    [RPC]
+	public virtual void SetDead() {
+		GetComponent<MeshRenderer>().material = deadMaterial;
+		Destroy(GetComponent<TrailRenderer>());
+	}
 
     [RPC]
 	public virtual void SetFirer(NetworkPlayer firer) {

@@ -87,7 +87,7 @@ public class UI : MonoBehaviour {
 			GUI.DrawTexture(RightRect, Right);
 			GUI.DrawTexture(BRect, Backwards);
 
-			if (Main.Me.GetComponent<Car>().HasMissile) {
+			if (Main.Me.GetComponent<Car>().HasItem) {
 				GUI.DrawTexture(ARect, Trigger);
 			} else {
 				GUI.DrawTexture(ARect, TriggerDisabled);

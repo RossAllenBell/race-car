@@ -26,8 +26,8 @@ public class Car : MonoBehaviour {
 
 	private float forwardDown = 0;
 
-	private bool hasMissile = false;
-	public bool HasMissile { get { return hasMissile; } }
+	private GameObject itemPrefab = null;
+	public bool HasItem { get { return itemPrefab != null; } }
 
 	void Start () {
 		rigidbody.centerOfMass = new Vector3(0, -0.5f, 0);
@@ -35,7 +35,7 @@ public class Car : MonoBehaviour {
 	
 	void Update () {
 		if (networkView.isMine) {
-			if (hasMissile && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
+			if (HasItem && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
 				networkView.RPC("FireMissile", RPCMode.All);
 			}
 		}
@@ -127,17 +127,17 @@ public class Car : MonoBehaviour {
     }
 
     [RPC]
-	void GetMissile() {
-		hasMissile = true;
+	void GetItem() {
+		itemPrefab = WeaponManager.GetItem();
 	}
 
     [RPC]
 	void FireMissile() {
-		hasMissile = false;
 		if(Network.isServer){
-			GameObject missile = (GameObject) Network.Instantiate(missilePrefab, transform.position, transform.rotation, 0);
+			GameObject missile = (GameObject) Network.Instantiate(itemPrefab, transform.position, transform.rotation, 0);
 			missile.networkView.RPC("SetFirer", RPCMode.All, gameObject.networkView.owner);
 		}
+		itemPrefab = null;
 	}
 
 }
