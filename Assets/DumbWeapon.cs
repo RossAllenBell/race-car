@@ -5,16 +5,19 @@ public class DumbWeapon : MonoBehaviour {
 
 	public GameObject explosionPrefab;
 	public Material deadMaterial;
-
+	public LayerMask playerLayer;
 	public float speed;
+
+	public float homingRadius;
+	public float homingMagnitude;
+
+	protected NetworkPlayer firer;
+	protected bool bounced;
 
 	private bool live;
 	private bool impacted;
-	private NetworkPlayer firer;
 
-	private bool bounced;
-
-	void Start () { 
+	public virtual void Start () { 
 		if (Network.isServer) {
 			bounced = false;
 		    impacted = false;
@@ -22,7 +25,7 @@ public class DumbWeapon : MonoBehaviour {
 		}
 	}
 	
-	void FixedUpdate () {
+	public virtual void FixedUpdate () {
 		if(Network.isServer){
 			if(impacted || transform.position.magnitude > 200){
 				Network.RemoveRPCs(networkView.viewID);
@@ -34,19 +37,19 @@ public class DumbWeapon : MonoBehaviour {
 		}
 	}
 	
-	void LateUpdate () {
+	public virtual void LateUpdate () {
 		if(Network.isServer){
 			if(rigidbody.useGravity){
 				if(rigidbody.velocity.magnitude > speed + 1) {
-					rigidbody.AddForce(-rigidbody.velocity.normalized / 10f);
+					rigidbody.AddForce(-rigidbody.velocity.normalized);
 				} else if(rigidbody.velocity.magnitude < speed) {
-					rigidbody.AddForce(rigidbody.velocity.normalized / 10f);
+					rigidbody.AddForce(rigidbody.velocity.normalized);
 				}
 			}
 		}
 	}
 
-	void OnCollisionEnter(Collision other) {
+	public virtual void OnCollisionEnter(Collision other) {
 		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject.transform.root.gameObject;
 			Car car;
@@ -59,7 +62,7 @@ public class DumbWeapon : MonoBehaviour {
 				Main.PlayersUpdate = true;
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
-			} else if(collidingObject.GetComponent<DumbWeapon>()){
+			} else if(collidingObject.tag == "Weapon"){
 				impacted = true;
 			} else if(!bounced && collidingObject.tag == "Wall") {
 				bounced = true;
@@ -69,7 +72,7 @@ public class DumbWeapon : MonoBehaviour {
 		}
     }
 
-	void OnTriggerExit(Collider other) {
+	public virtual void OnTriggerExit(Collider other) {
 		if (Network.isServer) {
 			GameObject collidingObject = other.gameObject.transform.root.gameObject;
 			if(collidingObject.networkView && collidingObject.networkView.owner == firer){
@@ -80,7 +83,7 @@ public class DumbWeapon : MonoBehaviour {
     }
 
     [RPC]
-	void SetFirer(NetworkPlayer firer) {
+	public virtual void SetFirer(NetworkPlayer firer) {
 		this.firer = firer;
 	}
 }

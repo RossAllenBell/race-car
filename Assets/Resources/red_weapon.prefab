@@ -17,7 +17,7 @@ GameObject:
   - 148: {fileID: 14800002}
   - 96: {fileID: 9600000}
   m_Layer: 0
-  m_Name: green_weapon
+  m_Name: red_weapon
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: f4e5124823a26184ca8ddeda7e506ac2, type: 2}
+  - {fileID: 2100000, guid: ac1e365440335384e911a18eccbc4789, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -89,7 +89,7 @@ TrailRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: f4e5124823a26184ca8ddeda7e506ac2, type: 2}
+  - {fileID: 2100000, guid: ac1e365440335384e911a18eccbc4789, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -103,19 +103,19 @@ TrailRenderer:
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 4278237484
+      rgba: 4278190334
     m_Color[1]:
       serializedVersion: 2
-      rgba: 4278237484
+      rgba: 4278190334
     m_Color[2]:
       serializedVersion: 2
-      rgba: 4278237484
+      rgba: 4278190334
     m_Color[3]:
       serializedVersion: 2
-      rgba: 4278237484
+      rgba: 4278190334
     m_Color[4]:
       serializedVersion: 2
-      rgba: 47404
+      rgba: 254
   m_MinVertexDistance: .100000001
   m_Autodestruct: 0
 --- !u!114 &11400000
@@ -126,12 +126,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39dac9ec8d66e644f84dced11abb571a, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b2179a47d9914c44bcf2e9f3d26671f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 100000, guid: 55180af4376182d47b6cf9fb397d706b, type: 2}
   deadMaterial: {fileID: 2100000, guid: 567fd0d8de79ab343a850aa3e5a1c86b, type: 2}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
   speed: 75
+  homingRadius: 15
+  homingMagnitude: 17.5
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1
