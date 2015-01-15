@@ -1215,7 +1215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d23526bc2a281ac4faf4772f9373e85a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missilePrefab: {fileID: 100000, guid: 39b1a77b1d3993641be4d13426ccb4cc, type: 2}
+  missilePrefab: {fileID: 100000, guid: 68da1966d2a5d3f4b8bad10c98495cee, type: 2}
   fl: {fileID: 14600006}
   fr: {fileID: 14600004}
   bl: {fileID: 14600002}

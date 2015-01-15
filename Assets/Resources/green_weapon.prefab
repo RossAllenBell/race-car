@@ -17,7 +17,7 @@ GameObject:
   - 148: {fileID: 14800002}
   - 96: {fileID: 9600000}
   m_Layer: 0
-  m_Name: missile
+  m_Name: green_weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: ac1e365440335384e911a18eccbc4789, type: 2}
+  - {fileID: 2100000, guid: f4e5124823a26184ca8ddeda7e506ac2, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -89,7 +89,7 @@ TrailRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: ac1e365440335384e911a18eccbc4789, type: 2}
+  - {fileID: 2100000, guid: f4e5124823a26184ca8ddeda7e506ac2, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -103,19 +103,19 @@ TrailRenderer:
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 4278190335
+      rgba: 4278237484
     m_Color[1]:
       serializedVersion: 2
-      rgba: 4278190335
+      rgba: 4278237484
     m_Color[2]:
       serializedVersion: 2
-      rgba: 4278190335
+      rgba: 4278237484
     m_Color[3]:
       serializedVersion: 2
-      rgba: 4278190335
+      rgba: 4278237484
     m_Color[4]:
       serializedVersion: 2
-      rgba: 255
+      rgba: 47404
   m_MinVertexDistance: .100000001
   m_Autodestruct: 0
 --- !u!114 &11400000
