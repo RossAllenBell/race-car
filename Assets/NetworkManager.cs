@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class NetworkManager : MonoBehaviour {
@@ -30,13 +31,15 @@ public class NetworkManager : MonoBehaviour {
 		return s;
 	}
 	 
-	private void StartServer()
+	public void StartServer()
 	{
 		CurrentRoomName = GetNewRoomName();
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 
 	    Main.Players.Add(Network.player, new PlayerStat(RandomString()));
+
+        GameObject.Find("MenuUICanvas").SetActive(false);
 	}
 
 	void OnServerInitialized()
@@ -63,22 +66,59 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	private HostData[] hostList;
- 
-	private void RefreshHostList()
+
+    public void RefreshHostList()
 	{
 	    MasterServer.RequestHostList(GetServerTypeName());
 	}
 	 
 	void OnMasterServerEvent(MasterServerEvent msEvent)
 	{
-	    if (msEvent == MasterServerEvent.HostListReceived)
-	        hostList = MasterServer.PollHostList();
+        if (msEvent == MasterServerEvent.HostListReceived)
+        {
+            hostList = MasterServer.PollHostList();
+
+            GameObject serverListPanel = GameObject.Find("MenuUIServerPanel");
+
+            foreach (Transform child in serverListPanel.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            for (int i = 0; i < hostList.Length; i++)
+            {
+                HostData hostData = hostList[i];
+                GameObject serverButton = (GameObject)Instantiate(Resources.Load("server_button"));
+                RectTransform rt = serverButton.GetComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0, 0.75f - (i * 0.25f));
+                rt.anchorMax = new Vector2(1, 1f - (i * 0.25f));
+                serverButton.transform.SetParent(serverListPanel.transform, false);
+
+                serverButton.GetComponent<Button>().onClick.AddListener(() => { JoinServer(hostData.gameName); });
+
+                serverButton.GetComponentInChildren<Text>().text = hostData.gameName;
+            }
+        }
 	}
 
-	private void JoinServer(HostData hostData)
+    public void JoinServer(string gameName)
+    {
+        foreach (HostData hostData in hostList)
+        {
+            if (hostData.gameName == gameName)
+            {
+                JoinServer(hostData);
+                return;
+            }
+        }
+    }
+
+    public void JoinServer(HostData hostData)
 	{
 		CurrentRoomName = hostData.gameName;
 	    Network.Connect(hostData);
+
+        GameObject.Find("MenuUICanvas").SetActive(false);
 	}
 
 	public void OnPlayerDisconnected(NetworkPlayer player) {
@@ -92,30 +132,5 @@ public class NetworkManager : MonoBehaviour {
 	{
 	    RefreshHostList();
 	}
-	
-	void Update ()
-	{
-	
-	}
 
-	void OnGUI()
-	{
-	    if (!Network.isClient && !Network.isServer)
-	    {
-	        if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
-	            StartServer();
-	 
-	        if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
-	            RefreshHostList();
-	 
-	        if (hostList != null)
-	        {
-	            for (int i = 0; i < hostList.Length; i++)
-	            {
-	                if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
-	                    JoinServer(hostList[i]);
-	            }
-	        }
-	    }
-	}
 }

@@ -78,7 +78,11 @@ public class UI : MonoBehaviour {
         foreach(PlayerStat stat in Main.Players.Values){
         	gameStats = gameStats + stat.name + " " + stat.score + "\n";
         }
-        GUI.Label(GameStatsRect, gameStats, GameStatsStyle);
+
+        if (GameStatsRect != null)
+        {
+            GUI.Label(GameStatsRect, gameStats, GameStatsStyle);
+        }
 
         if (Main.Me) {
         	GUI.Label(CarStatsRect, Main.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.Me.transform.rotation.eulerAngles, CarStatsStyle);
