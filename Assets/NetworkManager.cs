@@ -124,8 +124,8 @@ public class NetworkManager : MonoBehaviour {
 	public void OnPlayerDisconnected(NetworkPlayer player) {
         Network.RemoveRPCs(player);
         Network.DestroyPlayerObjects(player);
-        Main.Players.Remove(player);
-		Main.PlayersUpdate = true;
+
+        Main.theInstance.networkView.RPC("RemovePlayerStat", RPCMode.All, player);
     }
 
 	void Start ()

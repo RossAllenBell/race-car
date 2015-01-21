@@ -36,7 +36,11 @@ public class Main : MonoBehaviour {
     public static Dictionary<NetworkPlayer, PlayerStat> Players;
     public static bool PlayersUpdate;
 
+    public static GameObject theInstance;
+
 	public void Start () {
+        theInstance = gameObject;
+
 		Screen.orientation = ScreenOrientation.Landscape;
 
         GuiRatioWidth = (float) Screen.width / (float) NormalWidth;
@@ -111,6 +115,12 @@ public class Main : MonoBehaviour {
         }
 
         Players[nPlayer].score = score;
+    }
+
+    [RPC]
+    void RemovePlayerStat(NetworkPlayer nPlayer)
+    {
+        Main.Players.Remove(nPlayer);
     }
 
 }
