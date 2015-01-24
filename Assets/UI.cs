@@ -45,13 +45,13 @@ public class UI : MonoBehaviour {
 			BRect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 
 		    RoomNameStyle = new GUIStyle();
-		    RoomNameStyle.fontSize = Main.FontSmallest;
+		    RoomNameStyle.fontSize = Main.FontSmall;
 		    RoomNameStyle.normal.textColor = Color.red;
 		    RoomNameStyle.alignment = TextAnchor.UpperLeft;
 		    RoomNameRect = new Rect((Screen.width / 500), (Screen.width / 500), Screen.width, RoomNameStyle.CalcSize(new GUIContent("A")).y);
 
 		    GameStatsStyle = new GUIStyle();
-		    GameStatsStyle.fontSize = Main.FontSmallest;
+		    GameStatsStyle.fontSize = Main.FontSmall;
 		    GameStatsStyle.normal.textColor = Color.red;
 		    GameStatsStyle.alignment = TextAnchor.UpperLeft;
 		    GameStatsRect = new Rect((Screen.width / 500), (Screen.width / 500) + ( GameStatsStyle.CalcSize(new GUIContent("A")).y * 2), Screen.width, Screen.height);

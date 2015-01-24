@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-    public const string Version = "0.1.1";
-    public const string GameName = "Race Car";
+    public const string Version = "0.5.0";
+    public const string GameName = "Battle Karts";
 
 	public const float NormalWidth = 1920;
     public const float NormalHeight = 1080;
@@ -25,9 +25,12 @@ public class Main : MonoBehaviour {
     private const int NormalLargestFont = 300;
     public static int FontLargest;
     public static int FontMedium;
+    public static int FontSmall;
     public static int FontSmallest;
 
     public static GameObject Me;
+
+    public string PlayerName;
 
     public static List<GameObject> GoodyBoxes;
 
@@ -36,10 +39,10 @@ public class Main : MonoBehaviour {
     public static Dictionary<NetworkPlayer, PlayerStat> Players;
     public static bool PlayersUpdate;
 
-    public static GameObject theInstance;
+    public static Main theInstance;
 
 	public void Start () {
-        theInstance = gameObject;
+        theInstance = this;
 
 		Screen.orientation = ScreenOrientation.Landscape;
 
@@ -47,14 +50,18 @@ public class Main : MonoBehaviour {
         GuiRatioHeight = (float) Screen.height / (float) NormalHeight;
         GuiRatio = Mathf.Min(GuiRatioWidth, GuiRatioHeight);
 
-        FontLargest = (int) (NormalLargestFont * GuiRatio);
-        FontMedium = (int) (NormalLargestFont * 0.50 * GuiRatio);
+        FontLargest = (int)(NormalLargestFont * GuiRatio);
+        FontMedium = (int)(NormalLargestFont * 0.5 * GuiRatio);
+        FontSmall = (int)(NormalLargestFont * 0.2 * GuiRatio);
         FontSmallest = (int) (NormalLargestFont * 0.1 * GuiRatio);
 
         Players = new Dictionary<NetworkPlayer, PlayerStat>();
         PlayersUpdate = false;
 
         GoodyBoxes = new List<GameObject>();
+
+        PlayerName = "player";
+        MenuManager.theInstance.ShowStartMenu();
 	}
 	
 	public void Update () {
@@ -114,6 +121,7 @@ public class Main : MonoBehaviour {
             Players[nPlayer] = new PlayerStat(name);
         }
 
+        Players[nPlayer].name = name;
         Players[nPlayer].score = score;
     }
 
@@ -121,6 +129,13 @@ public class Main : MonoBehaviour {
     void RemovePlayerStat(NetworkPlayer nPlayer)
     {
         Main.Players.Remove(nPlayer);
+    }
+
+    [RPC]
+    void SetName(NetworkPlayer nPlayer, string name)
+    {
+        Players[nPlayer].name = name;
+        PlayersUpdate = true;
     }
 
 }

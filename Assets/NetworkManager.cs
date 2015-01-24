@@ -37,9 +37,9 @@ public class NetworkManager : MonoBehaviour {
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 
-	    Main.Players.Add(Network.player, new PlayerStat(RandomString()));
+	    Main.Players.Add(Network.player, new PlayerStat(Main.theInstance.PlayerName));
 
-        GameObject.Find("MenuUICanvas").SetActive(false);
+        MenuManager.theInstance.HideStartMenu();
 	}
 
 	void OnServerInitialized()
@@ -50,11 +50,12 @@ public class NetworkManager : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 	    SpawnPlayer();
+        Main.theInstance.networkView.RPC("SetName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
 	}
 
 	void OnPlayerConnected(NetworkPlayer player)
 	{
-		 Main.Players.Add(player, new PlayerStat(RandomString()));
+		 Main.Players.Add(player, new PlayerStat(""));
 		 Main.PlayersUpdate = true;
 	}
 	 
@@ -118,7 +119,7 @@ public class NetworkManager : MonoBehaviour {
 		CurrentRoomName = hostData.gameName;
 	    Network.Connect(hostData);
 
-        GameObject.Find("MenuUICanvas").SetActive(false);
+        MenuManager.theInstance.HideStartMenu();
 	}
 
 	public void OnPlayerDisconnected(NetworkPlayer player) {
