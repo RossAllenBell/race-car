@@ -136,6 +136,7 @@ MonoBehaviour:
     m_Bits: 0
   speed: 75
   weaponSprite: {fileID: 2800000, guid: 59868122b4b3c2a4497cc08decbfc71b, type: 3}
+  weaponName: green
   homingRadius: 0
   homingMagnitude: 0
 --- !u!135 &13500000

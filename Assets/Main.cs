@@ -40,6 +40,8 @@ public class Main : MonoBehaviour {
 
     public static Main theInstance;
 
+    public Color[] CarColors;
+
 	public void Start () {
         theInstance = this;
 

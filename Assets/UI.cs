@@ -6,7 +6,7 @@ public class UI : MonoBehaviour {
 	private Texture2D Left;
     private Texture2D Right;
     private Texture2D Backwards;
-    private Texture2D Trigger;
+    //private Texture2D Trigger;
     private Texture2D TriggerDisabled;
 
     public static  Rect RoomNameRect;
@@ -31,7 +31,7 @@ public class UI : MonoBehaviour {
 		Left = Resources.Load("left") as Texture2D;
 	    Right = Resources.Load("right") as Texture2D;
 	    Backwards = Resources.Load("backwards") as Texture2D;
-	    Trigger = Resources.Load("trigger") as Texture2D;
+	    //Trigger = Resources.Load("trigger") as Texture2D;
 	    TriggerDisabled = Resources.Load("disabled") as Texture2D;
 	}
 

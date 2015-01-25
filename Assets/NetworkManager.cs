@@ -44,7 +44,7 @@ public class NetworkManager : MonoBehaviour {
 
 	void OnServerInitialized()
 	{
-	    SpawnPlayer();
+        SpawnPlayer();
 	}
 	 
 	void OnConnectedToServer()
@@ -53,17 +53,30 @@ public class NetworkManager : MonoBehaviour {
         Main.theInstance.networkView.RPC("SetName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
 	}
 
-	void OnPlayerConnected(NetworkPlayer player)
+	void OnPlayerConnected(NetworkPlayer nPlayer)
 	{
-		 Main.Players.Add(player, new PlayerStat(""));
+         Main.Players.Add(nPlayer, new PlayerStat(""));
 		 Main.PlayersUpdate = true;
+
+         Car[] cars = GameObject.FindObjectsOfType<Car>();
+         foreach (Car car in cars)
+         {
+             if (car.networkView.owner != nPlayer)
+             {
+                 Color color = car.color;
+                 car.networkView.RPC("SetColor", RPCMode.All, color.r, color.g, color.b);
+             }
+         }
 	}
 	 
 	private void SpawnPlayer()
 	{
 		GameObject me = (GameObject) Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
 	    CarFollow.SetPlayer(me);
-	    Main.theInstance.Me = me.GetComponent<Car>();
+        Main.theInstance.Me = me.GetComponent<Car>();
+
+        Color color = Main.theInstance.CarColors[(int)(Main.theInstance.CarColors.Length * Random.value)];
+        Main.theInstance.Me.networkView.RPC("SetColor", RPCMode.All, color.r, color.g, color.b);
 	}
 
 	private HostData[] hostList;

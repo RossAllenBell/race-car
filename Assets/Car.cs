@@ -30,6 +30,8 @@ public class Car : MonoBehaviour {
     public bool RollingItem = false;
     public float StartedRolling;
 
+    public Color color;
+
 	void Start () {
 		rigidbody.centerOfMass = new Vector3(0, -0.5f, 0);
 	}
@@ -37,10 +39,9 @@ public class Car : MonoBehaviour {
 	void Update () {
 		if (networkView.isMine) {
 			if (Item && (Main.TouchingIn(UI.ARect) || Input.GetKeyDown("space"))){
-				networkView.RPC("FireMissile", RPCMode.All);
-			}
-
-            if (RollingItem && Time.time - StartedRolling > 2)
+                string weaponName = Item.GetComponent<DumbWeapon>().weaponName;
+				networkView.RPC("FireMissile", RPCMode.All, weaponName);
+			} else if (RollingItem && Time.time - StartedRolling > 2)
             {
                 CompleteItemRoll();
             }
@@ -146,12 +147,23 @@ public class Car : MonoBehaviour {
     }
 
     [RPC]
-	void FireMissile() {
+	void FireMissile(string weaponName) {
 		if(Network.isServer){
-            GameObject missile = (GameObject)Network.Instantiate(Item, transform.position, transform.rotation, 0);
+            GameObject missile = (GameObject)Network.Instantiate(WeaponManager.theInstance.WeaponPrefabs[weaponName], transform.position, transform.rotation, 0);
 			missile.networkView.RPC("SetFirer", RPCMode.All, gameObject.networkView.owner);
 		}
         Item = null;
 	}
+
+    [RPC]
+    void SetColor(float r, float g, float b)
+    {
+        this.color = new Color(r, g, b);
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material.color = this.color;
+        }
+    }
 
 }

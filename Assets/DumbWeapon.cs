@@ -8,6 +8,7 @@ public class DumbWeapon : MonoBehaviour {
 	public LayerMask playerLayer;
     public float speed;
     public Texture2D weaponSprite;
+    public string weaponName;
 
 	public float homingRadius;
 	public float homingMagnitude;
@@ -18,7 +19,7 @@ public class DumbWeapon : MonoBehaviour {
 	private bool live;
 	private bool impacted;
 
-	public virtual void Start () { 
+	public virtual void Start () {
 		if (Network.isServer) {
 			bounced = false;
 		    impacted = false;
