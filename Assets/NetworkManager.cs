@@ -63,7 +63,7 @@ public class NetworkManager : MonoBehaviour {
 	{
 		GameObject me = (GameObject) Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
 	    CarFollow.SetPlayer(me);
-	    Main.Me = me;
+	    Main.theInstance.Me = me.GetComponent<Car>();
 	}
 
 	private HostData[] hostList;

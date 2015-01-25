@@ -131,7 +131,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 100000, guid: 55180af4376182d47b6cf9fb397d706b, type: 2}
   deadMaterial: {fileID: 2100000, guid: 567fd0d8de79ab343a850aa3e5a1c86b, type: 2}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   speed: 75
+  weaponSprite: {fileID: 2800000, guid: 59868122b4b3c2a4497cc08decbfc71b, type: 3}
+  homingRadius: 0
+  homingMagnitude: 0
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

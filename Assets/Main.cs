@@ -28,8 +28,7 @@ public class Main : MonoBehaviour {
     public static int FontSmall;
     public static int FontSmallest;
 
-    public static GameObject Me;
-
+    public Car Me;
     public string PlayerName;
 
     public static List<GameObject> GoodyBoxes;

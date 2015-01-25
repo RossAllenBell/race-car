@@ -17,7 +17,7 @@ public class GoodyBox : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (Network.isServer) {
 			Car car = other.transform.root.GetComponent<Car>();
-			if (car && !car.HasItem) {
+			if (car && !car.Item) {
 				car.networkView.RPC("GetItem", RPCMode.All);;
 				Network.RemoveRPCs(networkView.viewID);
 		        Network.Destroy(gameObject);

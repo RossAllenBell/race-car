@@ -32,7 +32,7 @@ public class UI : MonoBehaviour {
 	    Right = Resources.Load("right") as Texture2D;
 	    Backwards = Resources.Load("backwards") as Texture2D;
 	    Trigger = Resources.Load("trigger") as Texture2D;
-	    TriggerDisabled = Resources.Load("trigger-disabled") as Texture2D;
+	    TriggerDisabled = Resources.Load("disabled") as Texture2D;
 	}
 
 	void Update () {
@@ -84,16 +84,24 @@ public class UI : MonoBehaviour {
             GUI.Label(GameStatsRect, gameStats, GameStatsStyle);
         }
 
-        if (Main.Me) {
-        	GUI.Label(CarStatsRect, Main.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.Me.transform.rotation.eulerAngles, CarStatsStyle);
+        if (Main.theInstance.Me) {
+            GUI.Label(CarStatsRect, Main.theInstance.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.theInstance.Me.transform.rotation.eulerAngles, CarStatsStyle);
 
 			GUI.DrawTexture(LeftRect, Left);
 			GUI.DrawTexture(RightRect, Right);
 			GUI.DrawTexture(BRect, Backwards);
 
-			if (Main.Me.GetComponent<Car>().HasItem) {
-				GUI.DrawTexture(ARect, Trigger);
-			} else {
+            Car me = Main.theInstance.Me;
+			if (me.Item)
+            {
+                GUI.DrawTexture(ARect, me.Item.GetComponent<DumbWeapon>().weaponSprite);
+            } else if (me.RollingItem) {
+                string[] names = WeaponManager.theInstance.WeaponNames;
+                float timeSinceRolling = Time.time - me.StartedRolling;
+                string name = names[(int)(names.Length * (timeSinceRolling % 0.25f) * 4)];
+                GUI.DrawTexture(ARect, WeaponManager.theInstance.WeaponSprites[name]);
+                GUI.DrawTexture(ARect, TriggerDisabled);
+            } else {
 				GUI.DrawTexture(ARect, TriggerDisabled);
 			}
         }

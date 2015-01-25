@@ -6,7 +6,8 @@ public class DumbWeapon : MonoBehaviour {
 	public GameObject explosionPrefab;
 	public Material deadMaterial;
 	public LayerMask playerLayer;
-	public float speed;
+    public float speed;
+    public Texture2D weaponSprite;
 
 	public float homingRadius;
 	public float homingMagnitude;

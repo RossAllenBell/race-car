@@ -135,6 +135,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   speed: 75
+  weaponSprite: {fileID: 2800000, guid: 5f5f8516fa36be0468eecf59126aaeed, type: 3}
   homingRadius: 15
   homingMagnitude: 17.5
 --- !u!135 &13500000
