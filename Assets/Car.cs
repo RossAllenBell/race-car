@@ -43,7 +43,7 @@ public class Car : MonoBehaviour {
 				networkView.RPC("FireMissile", RPCMode.All, weaponName);
 			} else if (RollingItem && Time.time - StartedRolling > 2)
             {
-                CompleteItemRoll();
+                networkView.RPC("CompleteItemRoll", RPCMode.All);
             }
 		}
 	}
@@ -140,6 +140,7 @@ public class Car : MonoBehaviour {
         StartedRolling = Time.time;
     }
 
+    [RPC]
     void CompleteItemRoll()
     {
         RollingItem = false;
