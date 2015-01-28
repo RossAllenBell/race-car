@@ -8,7 +8,32 @@ public class NetworkManager : MonoBehaviour {
 
 	public GameObject playerPrefab;
 
-	//MasterServer.ipAddress = “127.0.0.1″;
+    //MasterServer.ipAddress = “127.0.0.1″;
+
+    void Start()
+    {
+        RefreshHostList();
+    }
+
+    public void Reset()
+    {
+        RefreshHostList();
+        CurrentRoomName = null;
+        Main.Players.Clear();
+        MenuManager.theInstance.ShowStartMenu();
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            Destroy(go);
+        }
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Weapon"))
+        {
+            Destroy(go);
+        }
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("GoodyBox"))
+        {
+            Destroy(go);
+        }
+    }
 
 	private string GetServerTypeName()
 	{
@@ -52,6 +77,11 @@ public class NetworkManager : MonoBehaviour {
 	    SpawnPlayer();
         Main.theInstance.networkView.RPC("SetName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
 	}
+
+    void OnDisconnectedFromServer(NetworkDisconnection info)
+    {
+        Reset();
+    }
 
 	void OnPlayerConnected(NetworkPlayer nPlayer)
 	{
@@ -141,10 +171,5 @@ public class NetworkManager : MonoBehaviour {
 
         Main.theInstance.networkView.RPC("RemovePlayerStat", RPCMode.All, player);
     }
-
-	void Start ()
-	{
-	    RefreshHostList();
-	}
 
 }

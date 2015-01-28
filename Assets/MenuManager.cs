@@ -30,9 +30,6 @@ public class MenuManager : MonoBehaviour {
     public void ShowChangeNameMenu()
     {
         ChangeNamePanel.SetActive(true);
-        //Debug.Log(Main.theInstance.PlayerName);
-        //NameInputField.GetComponent<Text>().text = Main.theInstance.PlayerName;
-        //NameInputField.GetComponent<Text>().text = "what?!";
     }
 
     public void HideChangeNameMenu()
