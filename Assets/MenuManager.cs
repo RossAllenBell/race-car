@@ -11,6 +11,9 @@ public class MenuManager : MonoBehaviour {
     public GameObject ChangeNamePanel;
     public GameObject NameInputField;
 
+    public GameObject ErrorCanvas;
+    public GameObject ErrorLabel;
+
     public void Start()
     {
         theInstance = this;
@@ -37,6 +40,18 @@ public class MenuManager : MonoBehaviour {
         Main.theInstance.PlayerName = NameInputField.GetComponent<Text>().text;
         ShowStartMenu();
         ChangeNamePanel.SetActive(false);
+    }
+
+    public void ShowErrorMenu(string error)
+    {
+        ErrorCanvas.SetActive(true);
+        ErrorLabel.GetComponent<Text>().text = error;
+    }
+
+    public void HideErrorMenu()
+    {
+        ErrorCanvas.SetActive(false);
+        NetworkManager.theInstance.ResetNetworkState();
     }
     
 }

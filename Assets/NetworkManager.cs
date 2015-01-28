@@ -5,17 +5,21 @@ using System.Collections;
 public class NetworkManager : MonoBehaviour {
 
 	public static string CurrentRoomName;
+    public static NetworkManager theInstance;
 
 	public GameObject playerPrefab;
+    public string LastError;
 
     //MasterServer.ipAddress = “127.0.0.1″;
 
     void Start()
     {
+        theInstance = this;
+        LastError = "";
         RefreshHostList();
     }
 
-    public void Reset()
+    public void ResetNetworkState()
     {
         RefreshHostList();
         CurrentRoomName = null;
@@ -80,7 +84,7 @@ public class NetworkManager : MonoBehaviour {
 
     void OnDisconnectedFromServer(NetworkDisconnection info)
     {
-        Reset();
+        ResetNetworkState();
     }
 
 	void OnPlayerConnected(NetworkPlayer nPlayer)
@@ -170,6 +174,16 @@ public class NetworkManager : MonoBehaviour {
         Network.DestroyPlayerObjects(player);
 
         Main.theInstance.networkView.RPC("RemovePlayerStat", RPCMode.All, player);
+    }
+
+    void OnFailedToConnectToMasterServer(NetworkConnectionError error)
+    {
+        MenuManager.theInstance.ShowErrorMenu(error.ToString());
+    }
+
+    void OnFailedToConnect(NetworkConnectionError error)
+    {
+        MenuManager.theInstance.ShowErrorMenu(error.ToString());
     }
 
 }
