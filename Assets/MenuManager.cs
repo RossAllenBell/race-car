@@ -10,6 +10,14 @@ public class MenuManager : MonoBehaviour {
     public GameObject NameLabel;
     public GameObject ChangeNamePanel;
     public GameObject NameInputField;
+    public GameObject UsePasswordToggle;
+
+    public GameObject ServerPasswordCanvas;
+    public GameObject ServerPasswordInputField;
+
+    public GameObject ConnectingPasswordCanvas;
+    public GameObject ConnectingPasswordInputField;
+    public GameObject ConnectingPasswordAcceptButton;
 
     public GameObject ErrorCanvas;
     public GameObject ErrorLabel;
@@ -40,6 +48,31 @@ public class MenuManager : MonoBehaviour {
         Main.theInstance.PlayerName = NameInputField.GetComponent<Text>().text;
         ShowStartMenu();
         ChangeNamePanel.SetActive(false);
+    }
+
+    public void ShowServerPasswordMenu()
+    {
+        ServerPasswordCanvas.SetActive(true);
+    }
+
+    public void HideServerPasswordMenu()
+    {
+        NetworkManager.theInstance.Password = ServerPasswordInputField.GetComponent<Text>().text;
+        ServerPasswordCanvas.SetActive(false);
+        NetworkManager.theInstance.StartServer(true);
+    }
+
+    public void ShowConnectingPasswordMenu(HostData hostData)
+    {
+        ConnectingPasswordAcceptButton.GetComponent<Button>().onClick.AddListener(() => { HideConnectingPasswordMenu(hostData); });
+        ConnectingPasswordCanvas.SetActive(true);
+    }
+
+    public void HideConnectingPasswordMenu(HostData hostData)
+    {
+        string password = ConnectingPasswordInputField.GetComponent<Text>().text;
+        ConnectingPasswordCanvas.SetActive(false);
+        NetworkManager.theInstance.JoinServer(hostData, password);
     }
 
     public void ShowErrorMenu(string error)

@@ -61,7 +61,7 @@ public class Main : MonoBehaviour {
 
         GoodyBoxes = new List<GameObject>();
 
-        PlayerName = "player";
+        PlayerName = "Player " + NetworkManager.RandomString(2);
         MenuManager.theInstance.ShowStartMenu();
 	}
 	

@@ -8,21 +8,24 @@ public class NetworkManager : MonoBehaviour {
     public static NetworkManager theInstance;
 
 	public GameObject playerPrefab;
-    public string LastError;
+
+    public string Password;
+    public HostData HostData;
 
     //MasterServer.ipAddress = “127.0.0.1″;
 
     void Start()
     {
         theInstance = this;
-        LastError = "";
-        RefreshHostList();
+        ResetNetworkState();
     }
 
     public void ResetNetworkState()
     {
         RefreshHostList();
+        Password = "";
         CurrentRoomName = null;
+        HostData = null;
         Main.Players.Clear();
         MenuManager.theInstance.ShowStartMenu();
         foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player"))
@@ -49,20 +52,27 @@ public class NetworkManager : MonoBehaviour {
 		return RandomString() + System.DateTime.UtcNow.ToString(" yyMMddHHmm");
 	}
 
-	private string RandomString()
-	{
-		char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-		string s = "";
-		for(int i=0; i<3; i++)
-		{
-			s += letters[(int)Mathf.Floor(Random.value * letters.Length)];
-		}
-		return s;
-	}
+    public static string RandomString(int length=3)
+    {
+        char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+        string s = "";
+        for (int i = 0; i < length; i++)
+        {
+            s += letters[(int)Mathf.Floor(Random.value * letters.Length)];
+        }
+        return s;
+    }
 	 
-	public void StartServer()
+	public void StartServer(bool passwordExplicitlyEntered=false)
 	{
+        if (MenuManager.theInstance.UsePasswordToggle.GetComponent<Toggle>().isOn && (Password == "" && !passwordExplicitlyEntered))
+        {
+            MenuManager.theInstance.ShowServerPasswordMenu();
+            return;
+        }
+
 		CurrentRoomName = GetNewRoomName();
+        Network.incomingPassword = Password;
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 
@@ -142,29 +152,23 @@ public class NetworkManager : MonoBehaviour {
                 rt.anchorMax = new Vector2(1, 1f - (i * 0.25f));
                 serverButton.transform.SetParent(serverListPanel.transform, false);
 
-                serverButton.GetComponent<Button>().onClick.AddListener(() => { JoinServer(hostData.gameName); });
+                serverButton.GetComponent<Button>().onClick.AddListener(() => { JoinServer(hostData); });
 
-                serverButton.GetComponentInChildren<Text>().text = hostData.gameName;
+                serverButton.GetComponentInChildren<Text>().text = hostData.gameName + (hostData.passwordProtected? " (pass)" : "");
             }
         }
 	}
 
-    public void JoinServer(string gameName)
+    public void JoinServer(HostData hostData, string password="")
     {
-        foreach (HostData hostData in hostList)
+        if (hostData.passwordProtected && password == "")
         {
-            if (hostData.gameName == gameName)
-            {
-                JoinServer(hostData);
-                return;
-            }
+            MenuManager.theInstance.ShowConnectingPasswordMenu(hostData);
+            return;
         }
-    }
 
-    public void JoinServer(HostData hostData)
-	{
 		CurrentRoomName = hostData.gameName;
-	    Network.Connect(hostData);
+        Network.Connect(hostData, password);
 
         MenuManager.theInstance.HideStartMenu();
 	}
@@ -181,9 +185,14 @@ public class NetworkManager : MonoBehaviour {
         MenuManager.theInstance.ShowErrorMenu(error.ToString());
     }
 
+    private string lastFailedConnectError="";
     void OnFailedToConnect(NetworkConnectionError error)
     {
-        MenuManager.theInstance.ShowErrorMenu(error.ToString());
+        if (error.ToString() != "ConnectionFailed" || lastFailedConnectError != "InvalidPassword")
+        {
+            MenuManager.theInstance.ShowErrorMenu(error.ToString());
+        }
+        lastFailedConnectError = error.ToString();
     }
 
 }
