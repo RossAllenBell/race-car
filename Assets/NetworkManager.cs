@@ -151,7 +151,7 @@ public class NetworkManager : MonoBehaviour {
         {
             hostList = MasterServer.PollHostList();
 
-            GameObject serverListPanel = GameObject.Find("MenuUIServerPanel");
+            GameObject serverListPanel = MenuManager.theInstance.ServerListPanel;
 
             foreach (Transform child in serverListPanel.transform)
             {
@@ -163,18 +163,23 @@ public class NetworkManager : MonoBehaviour {
                 return host1.gameName.CompareTo(host2.gameName);
             });
 
+            if (hostList.Length > 0)
+            {
+                serverListPanel.SetActive(true);
+            }
+            else
+            {
+                serverListPanel.SetActive(false);
+            }
+
             for (int i = 0; i < hostList.Length; i++)
             {
                 HostData hostData = hostList[i];
                 GameObject serverButton = (GameObject)Instantiate(Resources.Load("server_button"));
-                RectTransform rt = serverButton.GetComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0, 0.75f - (i * 0.25f));
-                rt.anchorMax = new Vector2(1, 1f - (i * 0.25f));
-                serverButton.transform.SetParent(serverListPanel.transform, false);
 
                 serverButton.GetComponent<Button>().onClick.AddListener(() => { JoinServer(hostData); });
-
-                serverButton.GetComponentInChildren<Text>().text = hostData.gameName + (hostData.passwordProtected? " (pass)" : "");
+                serverButton.GetComponentInChildren<Text>().text = hostData.gameName + (hostData.passwordProtected ? " (pass)" : "");
+                serverButton.transform.SetParent(serverListPanel.transform);
             }
         }
 	}

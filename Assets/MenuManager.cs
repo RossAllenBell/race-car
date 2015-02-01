@@ -11,6 +11,7 @@ public class MenuManager : MonoBehaviour {
     public GameObject ChangeNamePanel;
     public GameObject NameInputField;
     public GameObject UsePasswordToggle;
+    public GameObject ServerListPanel;
 
     public GameObject ServerPasswordCanvas;
     public GameObject ServerPasswordInputField;
