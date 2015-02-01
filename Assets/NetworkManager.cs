@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class NetworkManager : MonoBehaviour {
 
@@ -22,7 +23,6 @@ public class NetworkManager : MonoBehaviour {
 
     public void ResetNetworkState()
     {
-        RefreshHostList();
         Password = "";
         CurrentRoomName = null;
         HostData = null;
@@ -40,6 +40,21 @@ public class NetworkManager : MonoBehaviour {
         {
             Destroy(go);
         }
+        RefreshHostList();
+    }
+
+    public void ManualDisconnect()
+    {
+        if (Network.isServer)
+        {
+            MasterServer.UnregisterHost();
+            Network.Disconnect();
+        }
+        else if (Network.isClient)
+        {
+            Network.Disconnect();
+        }
+        ResetNetworkState();
     }
 
 	private string GetServerTypeName()
@@ -58,7 +73,7 @@ public class NetworkManager : MonoBehaviour {
         string s = "";
         for (int i = 0; i < length; i++)
         {
-            s += letters[(int)Mathf.Floor(Random.value * letters.Length)];
+            s += letters[(int)Mathf.Floor(UnityEngine.Random.value * letters.Length)];
         }
         return s;
     }
@@ -71,7 +86,7 @@ public class NetworkManager : MonoBehaviour {
             return;
         }
 
-		CurrentRoomName = GetNewRoomName();
+        CurrentRoomName = GetNewRoomName();
         Network.incomingPassword = Password;
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
@@ -119,7 +134,7 @@ public class NetworkManager : MonoBehaviour {
 	    CarFollow.SetPlayer(me);
         Main.theInstance.Me = me.GetComponent<Car>();
 
-        Color color = Main.theInstance.CarColors[(int)(Main.theInstance.CarColors.Length * Random.value)];
+        Color color = Main.theInstance.CarColors[(int)(Main.theInstance.CarColors.Length * UnityEngine.Random.value)];
         Main.theInstance.Me.networkView.RPC("SetColor", RPCMode.All, color.r, color.g, color.b);
 	}
 
@@ -142,6 +157,11 @@ public class NetworkManager : MonoBehaviour {
             {
                 Destroy(child.gameObject);
             }
+
+            Array.Sort(hostList, delegate(HostData host1, HostData host2)
+            {
+                return host1.gameName.CompareTo(host2.gameName);
+            });
 
             for (int i = 0; i < hostList.Length; i++)
             {

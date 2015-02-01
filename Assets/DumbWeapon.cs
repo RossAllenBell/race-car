@@ -30,9 +30,9 @@ public class DumbWeapon : MonoBehaviour {
 	public virtual void FixedUpdate () {
 		if(Network.isServer){
 			if(impacted || transform.position.magnitude > 200){
-                // Network.RemoveRPCs(networkView.viewID); only used to remove RPCs from a player as a whole?
-                // Network.Destroy(gameObject); will beat RPCs and cause an error
-                networkView.RPC("Destroy", RPCMode.All);
+                Network.RemoveRPCs(networkView.viewID);// only used to remove RPCs from a player as a whole?
+                Network.Destroy(gameObject);// will beat RPCs and cause an error
+                // networkView.RPC("Destroy", RPCMode.All);
 		        Network.Instantiate(explosionPrefab, transform.position, transform.rotation, 0);
 	        } else if(rigidbody.useGravity) {
 	        	rigidbody.AddForce(Vector3.down * 10);
@@ -96,9 +96,9 @@ public class DumbWeapon : MonoBehaviour {
         this.firer = firer;
     }
 
-    [RPC]
-    public virtual void Destroy()
-    {
-        Destroy(gameObject);
-    }
+    // [RPC]
+    // public virtual void Destroy()
+    // {
+    //     Destroy(gameObject);
+    // }
 }

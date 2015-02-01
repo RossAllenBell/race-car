@@ -45,8 +45,20 @@ public class Car : MonoBehaviour {
             {
                 networkView.RPC("CompleteItemRoll", RPCMode.All);
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                NetworkManager.theInstance.ManualDisconnect();
+            }
 		}
 	}
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            NetworkManager.theInstance.ManualDisconnect();
+        }
+    }
 
 	private bool keyboardDetected = false;
 	void FixedUpdate () {

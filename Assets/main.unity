@@ -2728,7 +2728,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 100022, guid: 9d3197e3567e84242ab2d015b3577029, type: 2}
-  LastError: 
   Password: 
 --- !u!4 &1023973905
 Transform:
