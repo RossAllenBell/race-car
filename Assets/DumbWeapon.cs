@@ -57,12 +57,13 @@ public class DumbWeapon : MonoBehaviour {
 			GameObject collidingObject = other.gameObject.transform.root.gameObject;
 			Car car;
 			if(car = collidingObject.GetComponent<Car>()){
+                int scoreChange;
 				if(firer == car.networkView.owner){
-					Main.Players[firer].score -= bounced? 1 : 2;
+                    scoreChange = bounced ? 1 : 2;
 				} else {
-					Main.Players[firer].score += bounced? 1 : 5;
+                    scoreChange = bounced ? 1 : 5;
 				}
-				Main.PlayersUpdate = true;
+                Main.theInstance.ChangePlayerScore(firer, scoreChange);
 				impacted = true;
 				collidingObject.networkView.RPC("MissileHit", RPCMode.All);
 			} else if(collidingObject.tag == "Weapon"){

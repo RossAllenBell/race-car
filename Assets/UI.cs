@@ -45,16 +45,16 @@ public class UI : MonoBehaviour {
 			BRect = new Rect((Screen.width - ((NormalButtonWidth + NormalButtonpadding) * guiRatio)),  Screen.height - ((NormalButtonWidth + NormalButtonpadding) * guiRatio), NormalButtonWidth * guiRatio, NormalButtonWidth * guiRatio);
 
 		    RoomNameStyle = new GUIStyle();
-		    RoomNameStyle.fontSize = Main.FontSmall;
+		    RoomNameStyle.fontSize = Main.FontSmallest;
 		    RoomNameStyle.normal.textColor = Color.red;
-		    RoomNameStyle.alignment = TextAnchor.UpperLeft;
-		    RoomNameRect = new Rect((Screen.width / 500), (Screen.width / 500), Screen.width, RoomNameStyle.CalcSize(new GUIContent("A")).y);
+		    RoomNameStyle.alignment = TextAnchor.UpperRight;
+            RoomNameRect = new Rect(0, 0 + (20 * Main.GuiRatio), Screen.width - (20 * Main.GuiRatio), 500);
 
 		    GameStatsStyle = new GUIStyle();
 		    GameStatsStyle.fontSize = Main.FontSmall;
 		    GameStatsStyle.normal.textColor = Color.red;
 		    GameStatsStyle.alignment = TextAnchor.UpperLeft;
-		    GameStatsRect = new Rect((Screen.width / 500), (Screen.width / 500) + ( GameStatsStyle.CalcSize(new GUIContent("A")).y * 2), Screen.width, Screen.height);
+            GameStatsRect = new Rect(20 * Main.GuiRatio, 20 * Main.GuiRatio, Screen.width, Screen.height);
 
 			CarStatsStyle = new GUIStyle();
 		    CarStatsStyle.fontSize = Main.FontSmallest;
@@ -71,21 +71,22 @@ public class UI : MonoBehaviour {
 
 	void OnGUI() {
         if (NetworkManager.CurrentRoomName != null) {
-            GUI.Label(RoomNameRect, NetworkManager.CurrentRoomName, RoomNameStyle);
-        }
-
-        string gameStats = "";
-        foreach(PlayerStat stat in Main.Players.Values){
-        	gameStats = gameStats + stat.name + " " + stat.score + "\n";
+            DrawOutline(RoomNameRect, "Server Name: " + NetworkManager.CurrentRoomName, RoomNameStyle, 1, Color.red, Color.white);
         }
 
         if (GameStatsRect != null)
         {
-            GUI.Label(GameStatsRect, gameStats, GameStatsStyle);
+            int i=0;
+            foreach (PlayerStat stat in  Main.theInstance.Players.Values)
+            {
+                Rect rect = new Rect(GameStatsRect.x, GameStatsRect.y + (i * GameStatsStyle.CalcSize(new GUIContent("A")).y * 1.1f), GameStatsRect.width, GameStatsRect.height);
+                DrawOutline(rect, stat.name + ": " + stat.score, GameStatsStyle, 2, stat.color, Color.white);
+                i++;
+            }
         }
 
         if (Main.theInstance.Me) {
-            GUI.Label(CarStatsRect, Main.theInstance.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.theInstance.Me.transform.rotation.eulerAngles, CarStatsStyle);
+            //GUI.Label(CarStatsRect, Main.theInstance.Me.rigidbody.velocity.magnitude.ToString("F1") + "\n" + Main.theInstance.Me.transform.rotation.eulerAngles, CarStatsStyle);
 
 			GUI.DrawTexture(LeftRect, Left);
 			GUI.DrawTexture(RightRect, Right);
@@ -106,4 +107,43 @@ public class UI : MonoBehaviour {
 			}
         }
 	}
+
+    public static void DrawOutline(Rect position, string text, GUIStyle style)
+    {
+        DrawOutline(position, text, style, 2);
+    }
+
+    public static void DrawOutline(Rect position, string text, GUIStyle style, int offset)
+    {
+        DrawOutline(position, text, style, offset, style.normal.textColor);
+    }
+
+    public static void DrawOutline(Rect position, string text, GUIStyle style, int offset, Color color)
+    {
+        DrawOutline(position, text, style, offset, color, InvertColor(color));
+    }
+
+    public static void DrawOutline(Rect position, string text, GUIStyle style, int offset, Color color, Color outColor)
+    {
+        GUIStyle backupStyle = style;
+        style.normal.textColor = outColor;
+        position.x -= offset;
+        GUI.Label(position, text, style);
+        position.x += offset * 2;
+        GUI.Label(position, text, style);
+        position.x -= offset;
+        position.y -= offset;
+        GUI.Label(position, text, style);
+        position.y += offset * 2;
+        GUI.Label(position, text, style);
+        position.y -= offset;
+        style.normal.textColor = color;
+        GUI.Label(position, text, style);
+        style = backupStyle;
+    }
+
+    public static Color InvertColor(Color color)
+    {
+        return new Color(1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
+    }
 }

@@ -35,8 +35,12 @@ public class Main : MonoBehaviour {
 
     public GameObject goodyBoxPrefab;
 
-    public static Dictionary<NetworkPlayer, PlayerStat> Players;
-    public static bool PlayersUpdate;
+    private Vector2 GoodyBoxBounds;
+
+    public GameObject floor;
+
+    public Dictionary<NetworkPlayer, PlayerStat> Players;
+    private bool PlayersUpdate;
 
     public static Main theInstance;
 
@@ -61,6 +65,9 @@ public class Main : MonoBehaviour {
 
         GoodyBoxes = new List<GameObject>();
 
+        GoodyBoxBounds = new Vector2(floor.transform.localScale.x / 2f, floor.transform.localScale.z / 2f);
+        GoodyBoxBounds *= 10;
+
         PlayerName = "Player " + NetworkManager.RandomString(2);
         MenuManager.theInstance.ShowStartMenu();
 	}
@@ -74,9 +81,9 @@ public class Main : MonoBehaviour {
             }
 
             while (GoodyBoxes.Count < (Network.connections.Length + 1) * 2) {
-                float x = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
+                float x = GoodyBoxBounds.x * Random.value * (Random.value < 0.5f ? 1 : -1);
                 float y = 24f;
-                float z = 90f * Random.value * (Random.value < 0.5f? 1 : -1);
+                float z = GoodyBoxBounds.y * Random.value * (Random.value < 0.5f ? 1 : -1);
                 GameObject goodyBox = (GameObject) Network.Instantiate(goodyBoxPrefab, new Vector3(x, y, z), Quaternion.identity, 0);
                 GoodyBoxes.Add(goodyBox);
             }
@@ -84,7 +91,7 @@ public class Main : MonoBehaviour {
             if(PlayersUpdate){
                 PlayersUpdate = false;
                 foreach(NetworkPlayer nPlayer in Players.Keys){
-                    gameObject.networkView.RPC("UpdatePlayerStat", RPCMode.All, nPlayer, Players[nPlayer].name, Players[nPlayer].score);
+                    gameObject.networkView.RPC("UpdatePlayerStat", RPCMode.All, nPlayer, Players[nPlayer].name, Players[nPlayer].score, Players[nPlayer].color.r, Players[nPlayer].color.g, Players[nPlayer].color.b);
                 }
             }
         }
@@ -116,26 +123,60 @@ public class Main : MonoBehaviour {
         return Input.GetMouseButton(0) && GuiSpaceRect.Contains(TouchLocationToGuiLocation(Input.mousePosition));
     }
 
-    [RPC]
-    void UpdatePlayerStat(NetworkPlayer nPlayer, string name, int score) {
-        if(!Players.ContainsKey(nPlayer)){
-            Players[nPlayer] = new PlayerStat(name);
+    public void EnsureNPlayerExists(NetworkPlayer nPlayer)
+    {
+        if (!Players.ContainsKey(nPlayer))
+        {
+            Players[nPlayer] = new PlayerStat();
+            PlayersUpdate = true;
         }
+    }
+
+    public void ClearNPlayers()
+    {
+        Players.Clear();
+        PlayersUpdate = true;
+    }
+
+    public void ChangePlayerScore(NetworkPlayer nPlayer, int delta)
+    {
+        EnsureNPlayerExists(nPlayer);
+        Players[nPlayer].score += delta;
+        PlayersUpdate = true;
+    }
+
+    [RPC]
+    void UpdatePlayerStat(NetworkPlayer nPlayer, string name, int score, float colorR, float colorG, float colorB)
+    {
+        EnsureNPlayerExists(nPlayer);
 
         Players[nPlayer].name = name;
         Players[nPlayer].score = score;
+        Players[nPlayer].color = new Color(colorR, colorG, colorB);
     }
 
     [RPC]
     void RemovePlayerStat(NetworkPlayer nPlayer)
     {
-        Main.Players.Remove(nPlayer);
+        if (!Players.ContainsKey(nPlayer))
+        {
+            Players.Remove(nPlayer);
+        }
     }
 
     [RPC]
-    void SetName(NetworkPlayer nPlayer, string name)
+    public void SetPlayerName(NetworkPlayer nPlayer, string name)
     {
+        EnsureNPlayerExists(nPlayer);
         Players[nPlayer].name = name;
+        PlayersUpdate = true;
+    }
+
+    [RPC]
+    public void SetPlayerColor(NetworkPlayer nPlayer, float colorR, float colorG, float colorB)
+    {
+        EnsureNPlayerExists(nPlayer);
+        Players[nPlayer].color = new Color(colorR, colorG, colorB);
         PlayersUpdate = true;
     }
 

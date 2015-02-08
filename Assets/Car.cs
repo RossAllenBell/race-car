@@ -169,7 +169,7 @@ public class Car : MonoBehaviour {
 	}
 
     [RPC]
-    void SetColor(float r, float g, float b)
+    void SetColor(NetworkPlayer nPlayer, float r, float g, float b)
     {
         this.color = new Color(r, g, b);
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
@@ -177,6 +177,8 @@ public class Car : MonoBehaviour {
         {
             renderer.material.color = this.color;
         }
+        
+        Main.theInstance.SetPlayerColor(nPlayer, r, g, b);
     }
 
 }

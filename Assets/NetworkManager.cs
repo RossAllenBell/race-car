@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviour {
         Password = "";
         CurrentRoomName = null;
         HostData = null;
-        Main.Players.Clear();
+        Main.theInstance.ClearNPlayers();
         MenuManager.theInstance.ShowStartMenu();
         foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player"))
         {
@@ -91,7 +91,8 @@ public class NetworkManager : MonoBehaviour {
 	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 
-	    Main.Players.Add(Network.player, new PlayerStat(Main.theInstance.PlayerName));
+        Main.theInstance.EnsureNPlayerExists(Network.player);
+        Main.theInstance.SetPlayerName(Network.player, Main.theInstance.PlayerName);
 
         MenuManager.theInstance.HideStartMenu();
 	}
@@ -104,7 +105,7 @@ public class NetworkManager : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 	    SpawnPlayer();
-        Main.theInstance.networkView.RPC("SetName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
+        Main.theInstance.networkView.RPC("SetPlayerName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
 	}
 
     void OnDisconnectedFromServer(NetworkDisconnection info)
@@ -114,8 +115,7 @@ public class NetworkManager : MonoBehaviour {
 
 	void OnPlayerConnected(NetworkPlayer nPlayer)
 	{
-         Main.Players.Add(nPlayer, new PlayerStat(""));
-		 Main.PlayersUpdate = true;
+        Main.theInstance.EnsureNPlayerExists(nPlayer);
 
          Car[] cars = GameObject.FindObjectsOfType<Car>();
          foreach (Car car in cars)
@@ -123,7 +123,7 @@ public class NetworkManager : MonoBehaviour {
              if (car.networkView.owner != nPlayer)
              {
                  Color color = car.color;
-                 car.networkView.RPC("SetColor", RPCMode.All, color.r, color.g, color.b);
+                 car.networkView.RPC("SetColor", RPCMode.All, Network.player, color.r, color.g, color.b);
              }
          }
 	}
@@ -135,7 +135,7 @@ public class NetworkManager : MonoBehaviour {
         Main.theInstance.Me = me.GetComponent<Car>();
 
         Color color = Main.theInstance.CarColors[(int)(Main.theInstance.CarColors.Length * UnityEngine.Random.value)];
-        Main.theInstance.Me.networkView.RPC("SetColor", RPCMode.All, color.r, color.g, color.b);
+        me.networkView.RPC("SetColor", RPCMode.All, Network.player, color.r, color.g, color.b);
 	}
 
 	private HostData[] hostList;
