@@ -59,7 +59,7 @@ public class DumbWeapon : MonoBehaviour {
 			if(car = collidingObject.GetComponent<Car>()){
                 int scoreChange;
 				if(firer == car.networkView.owner){
-                    scoreChange = bounced ? 1 : 2;
+                    scoreChange = -(bounced ? 1 : 2);
 				} else {
                     scoreChange = bounced ? 1 : 5;
 				}

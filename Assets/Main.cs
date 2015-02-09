@@ -66,7 +66,7 @@ public class Main : MonoBehaviour {
         GoodyBoxes = new List<GameObject>();
 
         GoodyBoxBounds = new Vector2(floor.transform.localScale.x / 2f, floor.transform.localScale.z / 2f);
-        GoodyBoxBounds *= 10;
+        GoodyBoxBounds *= 9;
 
         PlayerName = "Player " + NetworkManager.RandomString(2);
         MenuManager.theInstance.ShowStartMenu();
@@ -158,7 +158,7 @@ public class Main : MonoBehaviour {
     [RPC]
     void RemovePlayerStat(NetworkPlayer nPlayer)
     {
-        if (!Players.ContainsKey(nPlayer))
+        if (Players.ContainsKey(nPlayer))
         {
             Players.Remove(nPlayer);
         }
