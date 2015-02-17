@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-    public const string Version = "0.8.0";
+    public const string Version = "0.10.1";
     public const string GameName = "Battle Karts";
 
 	public const float NormalWidth = 1920;
