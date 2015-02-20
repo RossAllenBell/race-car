@@ -13,8 +13,6 @@ public class NetworkManager : MonoBehaviour {
     public string Password;
     public HostData HostData;
 
-    //MasterServer.ipAddress = “127.0.0.1″;
-
     void Start()
     {
         theInstance = this;
@@ -88,7 +86,7 @@ public class NetworkManager : MonoBehaviour {
 
         CurrentRoomName = GetNewRoomName();
         Network.incomingPassword = Password;
-	    Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+	    Network.InitializeServer(7, 25123, !Network.HavePublicAddress());
 	    MasterServer.RegisterHost(GetServerTypeName(), CurrentRoomName);
 
         Main.theInstance.EnsureNPlayerExists(Network.player);
@@ -108,25 +106,31 @@ public class NetworkManager : MonoBehaviour {
         Main.theInstance.networkView.RPC("SetPlayerName", RPCMode.Server, Network.player, Main.theInstance.PlayerName);
 	}
 
-    void OnDisconnectedFromServer(NetworkDisconnection info)
-    {
-        ResetNetworkState();
-    }
-
 	void OnPlayerConnected(NetworkPlayer nPlayer)
 	{
         Main.theInstance.EnsureNPlayerExists(nPlayer);
 
-         Car[] cars = GameObject.FindObjectsOfType<Car>();
-         foreach (Car car in cars)
-         {
-             if (car.networkView.owner != nPlayer)
-             {
-                 Color color = car.color;
-                 car.networkView.RPC("SetColor", RPCMode.All, Network.player, color.r, color.g, color.b);
-             }
-         }
+        Car[] cars = GameObject.FindObjectsOfType<Car>();
+        foreach (Car car in cars)
+        {
+            if (car.networkView.owner != nPlayer)
+            {
+                Color color = car.color;
+                car.networkView.RPC("SetColor", RPCMode.All, Network.player, color.r, color.g, color.b);
+            }
+        }
+
+        ReconcileDeadWeaponsWithNewlyConnectedPlayer(nPlayer);
 	}
+
+    private void ReconcileDeadWeaponsWithNewlyConnectedPlayer(NetworkPlayer nPlayer)
+    {
+        foreach(DumbWeapon dw in FindObjectsOfType(typeof(DumbWeapon))){
+            if(dw.bounced){
+                dw.networkView.RPC("SetDead", nPlayer);
+            }
+        }
+    }
 	 
 	private void SpawnPlayer()
 	{
@@ -218,6 +222,15 @@ public class NetworkManager : MonoBehaviour {
             MenuManager.theInstance.ShowErrorMenu(error.ToString());
         }
         lastFailedConnectError = error.ToString();
+    }
+
+    void OnDisconnectedFromServer(NetworkDisconnection info)
+    {
+        ResetNetworkState();
+        if (!Network.isServer)
+        {
+            MenuManager.theInstance.ShowErrorMenu("Disconnected from server.");
+        }
     }
 
 }

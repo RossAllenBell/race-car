@@ -14,7 +14,7 @@ public class DumbWeapon : MonoBehaviour {
 	public float homingMagnitude;
 
 	protected NetworkPlayer firer;
-	protected bool bounced;
+	public bool bounced;
 
 	private bool live;
 	private bool impacted;
@@ -52,9 +52,10 @@ public class DumbWeapon : MonoBehaviour {
 		}
 	}
 
-	public virtual void OnCollisionEnter(Collision other) {
+    public virtual void OnCollisionEnter(Collision other)
+    {
+        GameObject collidingObject = other.gameObject.transform.root.gameObject;
 		if (Network.isServer) {
-			GameObject collidingObject = other.gameObject.transform.root.gameObject;
 			Car car;
 			if(car = collidingObject.GetComponent<Car>()){
                 int scoreChange;
@@ -72,7 +73,7 @@ public class DumbWeapon : MonoBehaviour {
 				bounced = true;
 				networkView.RPC("SetDead", RPCMode.All);
 			}
-		}
+        }
     }
 
 	public virtual void OnTriggerExit(Collider other) {
