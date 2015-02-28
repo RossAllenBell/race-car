@@ -9,3 +9,4 @@ Temp/
 *.keystore
 *.pdb
 output.txt
+ios_build/

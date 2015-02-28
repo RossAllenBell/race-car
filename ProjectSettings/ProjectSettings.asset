@@ -11,7 +11,7 @@ PlayerSettings:
   targetResolution: 0
   accelerometerFrequency: 60
   companyName: Ross Bell
-  productName: race-car
+  productName: Battle Karts
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   defaultScreenWidth: 1024
@@ -71,8 +71,8 @@ PlayerSettings:
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
   productGUID: de1338861142eef4fa0bfb833b8c8476
-  iPhoneBundleVersion: 0.10.3
-  AndroidBundleVersionCode: 14
+  iPhoneBundleVersion: 0.10.4
+  AndroidBundleVersionCode: 15
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -103,7 +103,7 @@ PlayerSettings:
   iPadHighResLandscapeSplashScreen: {fileID: 0}
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
-  AndroidKeystoreName: C:/dev/race-car/user.keystore
+  AndroidKeystoreName: keystore.keystore
   AndroidKeyaliasName: usual
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
